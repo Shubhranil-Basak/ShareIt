@@ -2,40 +2,35 @@
 
 using namespace std;
 
-Notification::Notification(string from_username, string to_username, string message, string date, string time) {
-    this->from_username = from_username;
-    this->to_username = to_username;
-    this->message = message;
-    this->date = date;
-    this->time = time;
-    this->isRead = false;
-}
+Notification::Notification(string &from_username, string &to_username, string &message, string &date, string &time) :
+    from_username(from_username), to_username(to_username), message(message), date(date), time(time), isRead(false) {}
+
 
 void Notification::markAsRead() {
     this->isRead = true;
 }
 
-string Notification::getFromUsername() {
+string Notification::getFromUsername() const {
     return this->from_username;
 }
 
-string Notification::getToUsername() {
+string Notification::getToUsername() const {
     return this->to_username;
 }
 
-string Notification::getMessage() {
+string Notification::getMessage() const {
     return this->message;
 }
 
-string Notification::getDate() {
+string Notification::getDate() const {
     return this->date;
 }
 
-string Notification::getTime() {
+string Notification::getTime() const {
     return this->time;
 }
 
-bool Notification::getIsRead() {
+bool Notification::getIsRead() const {
     return this->isRead;
 }
 

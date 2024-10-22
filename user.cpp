@@ -2,11 +2,15 @@
 
 using namespace std;
 
-User::User(string username, string password):
+User::User(string &username, string &password):
     username(username), password(password), coins(100) {}
 
-bool User::authenticate(string username, string password) {
-    return this->username == username && this->password == password;
+bool User::authenticate(string &entered_username, string &entered_password) const {
+    return this->username == entered_username && this->password == entered_password;
+}
+
+string User::getUsername() const {
+    return this->username;
 }
 
 void User::listItem(Listing* listing) {
@@ -30,7 +34,7 @@ void User::requestItem(Item* requested_item) {
     this->requested_items.push_back(requested_item);
 }
 
-void User::removeRequest(string name) {
+void User::removeRequest(string &name) {
     Item* item_to_del = nullptr;
     for (int i = 0; i < this->requested_items.size(); i++) {
         if (this->requested_items[i]->getName() == name) {
@@ -43,11 +47,26 @@ void User::removeRequest(string name) {
     item_to_del = nullptr;
 }
 
-void User::printNotifications() {
+void User::borrowItem(Item *item) {
+    borrowed_items.push_back(item);
+}
+
+void User::printNotifications() const {
     cout << "Notifications (Total: " << this->notifications.size() << ")" << endl;
     cout << separator << endl;
     for (Notification* notification: this->notifications) {
         notification->printNotification();
         cout << separator << endl;
     }
+}
+
+void User::acceptCoins(int coins_given) {
+    this->coins += coins_given;
+}
+
+bool User::spendCoins(int coins_to_spend) {
+    if (coins_to_spend > coins)
+        return false;
+    coins -= coins_to_spend;
+    return true;
 }

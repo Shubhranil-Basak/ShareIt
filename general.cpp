@@ -2,7 +2,7 @@
 
 using namespace std;
 
-enum categories stringToCategory(string category) {
+enum categories stringToCategory(string &category) {
     if (category == "electronics") {
         return electronics;
     } else if (category == "furniture") {
@@ -35,7 +35,7 @@ string categoryToString(enum categories category) {
     }
 }
 
-enum conditions stringToCondition(string condition) {
+enum conditions stringToCondition(string &condition) {
     if (condition == "excellent") {
         return excellent;
     } else if (condition == "good") {

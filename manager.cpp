@@ -2,14 +2,19 @@
 
 using namespace std;
 
-Manager::Manager() {}
-
 void Manager::registerUser(string username, string password) {
+    for (User* existing_user: users) {
+        if (existing_user->getUsername() == username) {
+            cout << "user with username '" << username << "' already exists. Try another username." << endl;
+            break;
+        }
+    }
     User* new_user = new User(username, password);
     this->users.push_back(new_user);
+    cout << "New user '" << username << "' is created! Login to access account.";
 }
 
-bool Manager::login(string username, string password) {
+bool Manager::login(string &username, string &password) {
     for (User* user: this->users) {
         if (user->authenticate(username, password)) {
             this->current_user = user;
@@ -28,29 +33,33 @@ void Manager::logout() {
     cout << "Logged out." << endl;
 }
 
-void Manager::printListings() {
+void Manager::printListings() const {
     cout << "Listings (Total: " << this->listings.size() << ")" << endl;
     cout << separator << endl;
     for (Listing* listing: this->listings) {
-        listing->printItem();
-        cout << separator << endl;
+        if (listing->isAvailable()) {
+            listing->printItem();
+            cout << separator << endl;
+        }
     }
 }
 
-void Manager::printNotifications() {
+void Manager::printNotifications() const {
     current_user->printNotifications();
 }
 
-void Manager::addListing(string name, string category, int quantity, int price, string from_date, string to_date, string condition) {
+void Manager::addListing(string name, string category, int quantity, int price,
+                         string from_date, string to_date, string condition) {
     // TODO: verify if the dates are valid, quantity and price are positive, and category and condition are valid
     
-    Listing* new_listing = new Listing(name, stringToCategory(category), quantity, price, from_date, to_date, stringToCondition(condition));
+    Listing* new_listing = new Listing(name, stringToCategory(category), quantity, price,
+                                       from_date, to_date, stringToCondition(condition));
     this->listings.push_back(new_listing);
     this->current_user->listItem(new_listing);
     cout << "Item " << name << " added listing." << endl;
 }
 
-void Manager::removeListing(string name) {
+void Manager::removeListing(string &name) {
     Listing* listing_to_del = nullptr;
     for (int i = 0; i < this->listings.size(); i++) {
         if (this->listings[i]->getName() == name) {
@@ -71,7 +80,7 @@ void Manager::removeListing(string name) {
 void Manager::addRequest(string name, string category, int quantity, string from_date, string to_date) {
     // TODO: verify if the dates are valid, quantity are positive, and category and condition are valid
     
-    Item* new_request = new Item(name, stringToCategory(category), quantity, from_date, to_date);
+    Item* new_request = new Item(name, stringToCategory(category), quantity, from_date, to_date, nullptr);
     this->current_user->requestItem(new_request);
     // TODO: search for a listing that matches the request and notify the owner
 }
@@ -83,7 +92,8 @@ void Manager::removeRequest(string name) {
 vector<Listing*> Manager::searchListings(Item* item) {
     vector<Listing*> search_results;
     for (Listing* listing: this->listings) {
-        if (listing->getName() == item->getName() && listing->getCategory() == item->getCategory() && listing->getQuantity() >= item->getQuantity()) {
+        if (listing->getName() == item->getName() && listing->getCategory() == item->getCategory() &&
+        listing->getQuantity() >= item->getQuantity()) {
             // TODO: check if the dates overlap
             search_results.push_back(listing);
         }
@@ -91,3 +101,20 @@ vector<Listing*> Manager::searchListings(Item* item) {
     return search_results;
 }
 
+void Manager::borrowItem(Listing *item_to_borrow) {
+    User* item_owner = item_to_borrow->getOwner();
+    current_user->borrowItem(item_to_borrow);
+    item_to_borrow->bookItem();
+}
+
+void Manager::shareCoins(string &receiving_username, int coins_to_share) {
+    // Assumed that a valid coins_to_share amount is given a.k.a 0 < coins_to_share <= user->coins
+    for (User* user: users) {
+        if (user->getUsername() == receiving_username) {
+            current_user->spendCoins(coins_to_share);
+            user->acceptCoins(coins_to_share);
+            break;
+        }
+    }
+    cout << "Transaction failed: user '" << receiving_username << "' doesn't exist." << endl;
+}
