@@ -1,0 +1,14 @@
+cmake_minimum_required(VERSION 3.28)
+project(ShareIt_project)
+
+set(CMAKE_CXX_STANDARD 14)
+
+include_directories(.)
+
+add_executable(ShareIt_project
+        classes.h
+        general.cpp
+        item_classes.cpp
+        manager.cpp
+        notification.cpp
+        user.cpp)

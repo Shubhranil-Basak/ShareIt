@@ -1,1 +1,2 @@
 Testing github push (CLI)
+Testing github push from CLion
