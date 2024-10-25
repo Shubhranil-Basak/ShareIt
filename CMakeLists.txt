@@ -11,4 +11,5 @@ add_executable(ShareIt_project
         item_classes.cpp
         manager.cpp
         notification.cpp
-        user.cpp)
+        user.cpp
+        main.cpp)

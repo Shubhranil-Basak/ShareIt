@@ -124,7 +124,7 @@ private:
 public:
     Manager() = default;
 
-    bool logged_in{};  // True if a user is logged in
+    bool logged_in;  // True if a user is logged in
 
     void registerUser(string username, string password);  // Adds a new user to the users vector
     bool login(string &username, string &password);  // updates current_user if valid username and password
@@ -146,5 +146,8 @@ public:
     void shareCoins(string &receiving_username, int coins_to_share);  // Transfers coins_to_share from the current_user to the receiving_user
 };
 
-
+// TODO: Make a itemID attribute
+// TODO: requestCoins method
+// TODO: Make a show requests method
+// TODO: Make a search listing/item by itemID (useful when notification arrives)
 // TODO: Negotiation system, maybe later on
