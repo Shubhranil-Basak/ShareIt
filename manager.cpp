@@ -2,6 +2,11 @@
 
 using namespace std;
 
+Manager::Manager() {
+    this->logged_in = false;
+    this->num_items = 0;
+}
+
 void Manager::registerUser(string username, string password) {
     for (User* existing_user: users) {
         if (existing_user->getUsername() == username) {
@@ -38,7 +43,7 @@ void Manager::printListings() const {
     cout << separator << endl;
     for (Listing* listing: this->listings) {
         if (listing->isAvailable()) {
-            listing->printItem();
+            listing->printListing();
             cout << separator << endl;
         }
     }
@@ -51,9 +56,10 @@ void Manager::printNotifications() const {
 void Manager::addListing(string name, string category, int quantity, int price,
                          string from_date, string to_date, string condition) {
     // TODO: verify if the dates are valid, quantity and price are positive, and category and condition are valid
-    
-    Listing* new_listing = new Listing(name, stringToCategory(category), quantity, price,
-                                       from_date, to_date, stringToCondition(condition));
+    Item* new_item = new Item(this->num_items, name, stringToCategory(category),
+                              stringToCondition(condition), quantity, from_date, to_date);
+    this->num_items++;
+    Listing* new_listing = new Listing(new_item, price, stringToCondition(condition));
     this->listings.push_back(new_listing);
     this->current_user->listItem(new_listing);
     cout << "Item " << name << " added listing." << endl;
@@ -62,25 +68,27 @@ void Manager::addListing(string name, string category, int quantity, int price,
 void Manager::removeListing(string &name) {
     Listing* listing_to_del = nullptr;
     for (int i = 0; i < this->listings.size(); i++) {
-        if (this->listings[i]->getName() == name) {
+        if (this->listings[i]->getItem()->getName() == name) {
             listing_to_del = this->listings[i];
             this->listings.erase(this->listings.begin() + i);
             break;
         }
     }
     if (listing_to_del == nullptr) {
-        cout << "Item " << name << " not listed." << endl;
+        cout << "Item " << name << " has not been listed." << endl;
     } else {
         this->current_user->removeListing(listing_to_del);  // Takes care of deleting the listing object as well
         listing_to_del = nullptr;
-        cout << "Item " << name << " removed listing." << endl;
+        cout << "Item " << name << " has been removed." << endl;
     }
 }
 
-void Manager::addRequest(string name, string category, int quantity, string from_date, string to_date) {
+void
+Manager::addRequest(string name, string category, string condition, int quantity, string from_date, string to_date) {
     // TODO: verify if the dates are valid, quantity are positive, and category and condition are valid
     
-    Item* new_request = new Item(name, stringToCategory(category), quantity, from_date, to_date, nullptr);
+    Item* new_request = new Item(-1, name, stringToCategory(category), stringToCondition(condition),
+                                 quantity, from_date, to_date);
     this->current_user->requestItem(new_request);
     // TODO: search for a listing that matches the request and notify the owner
 }
@@ -92,8 +100,8 @@ void Manager::removeRequest(string name) {
 vector<Listing*> Manager::searchListings(Item* item) {
     vector<Listing*> search_results;
     for (Listing* listing: this->listings) {
-        if (listing->getName() == item->getName() && listing->getCategory() == item->getCategory() &&
-        listing->getQuantity() >= item->getQuantity()) {
+        if (listing->getItem()->getName() == item->getName() && listing->getItem()->getCategory() == item->getCategory() &&
+        listing->getItem()->getQuantity() >= item->getQuantity()) {
             // TODO: check if the dates overlap
             search_results.push_back(listing);
         }
@@ -102,8 +110,8 @@ vector<Listing*> Manager::searchListings(Item* item) {
 }
 
 void Manager::borrowItem(Listing *item_to_borrow) {
-    User* item_owner = item_to_borrow->getOwner();
-    current_user->borrowItem(item_to_borrow);
+    User* item_owner = item_to_borrow->getItem()->getOwner();
+    current_user->borrowItem(reinterpret_cast<Item *>(item_to_borrow));
     item_to_borrow->bookItem();
 }
 

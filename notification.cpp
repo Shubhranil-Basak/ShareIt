@@ -2,42 +2,19 @@
 
 using namespace std;
 
-Notification::Notification(string &from_username, string &to_username, string &message, string &date, string &time) :
-    from_username(from_username), to_username(to_username), message(message), date(date), time(time), isRead(false) {}
-
-
-void Notification::markAsRead() {
-    this->isRead = true;
-}
-
-string Notification::getFromUsername() const {
-    return this->from_username;
-}
-
-string Notification::getToUsername() const {
-    return this->to_username;
-}
-
-string Notification::getMessage() const {
-    return this->message;
-}
-
-string Notification::getDate() const {
-    return this->date;
-}
-
-string Notification::getTime() const {
-    return this->time;
-}
-
-bool Notification::getIsRead() const {
-    return this->isRead;
-}
+Notification::Notification(std::string &from_username, std::string &to_username, Item *item_referred,
+                           std::string &type) :
+                           from_username(from_username), to_username(to_username), item_referred(item_referred),
+                           type(type) {}
 
 void Notification::printNotification() {
-    this->markAsRead();
-    cout << "From: " << this->from_username << "     |     " << "To: " << this->to_username 
-            << "     |     " << this->date << " " << this->time << endl;
-    cout << separator << endl;
-    cout << "Message: " << this->message << endl;
+    if (type == "request") {
+        cout << "User " << from_username << " has requested to borrow " << item_referred->getName() << "." << endl;
+    }
+    else if (type == "accept") {
+        cout << "User " << from_username << " has accepted your request to borrow " << item_referred->getName() << "." << endl;
+    }
+    else if (type == "reject") {
+        cout << "User " << from_username << " has rejected your request to borrow " << item_referred->getName() << "." << endl;
+    }
 }

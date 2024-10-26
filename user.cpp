@@ -48,7 +48,7 @@ void User::removeRequest(string &name) {
 }
 
 void User::borrowItem(Item *item) {
-    borrowed_items.push_back(item);
+    currently_borrowed_items.push_back(item);
 }
 
 void User::printNotifications() const {

@@ -4,9 +4,14 @@ using namespace std;
 
 // Item class
 
-Item::Item(string &name, enum categories category, int &quantity, string &from_date, string &to_date, User *owner) :
-    name(name), category(category), quantity(quantity), from_date(from_date), to_date(to_date),
-    owner(owner), borrower(nullptr) {}
+Item::Item(int itemID, std::string name, enum categories category, enum conditions condition, int quantity,
+           std::string from_date, std::string to_date)
+    : itemID(itemID), name(name), category(category), condition(condition), quantity(quantity),
+      from_date(from_date), to_date(to_date) {}
+
+int Item::getItemID() const {
+    return this->itemID;
+}
 
 string Item::getName() const {
     return this->name;
@@ -22,6 +27,10 @@ User* Item::getBorrower() const {
 
 enum categories Item::getCategory() const {
     return this->category;
+}
+
+enum conditions Item::getCondition() const {
+    return this->condition;
 }
 
 int Item::getQuantity() const {
@@ -59,36 +68,30 @@ void Item::printItem() {
 
 // Listing class
 
-Listing::Listing(string name, enum categories category, int quantity, int price,
-        string from_date, string to_date, enum conditions condition):
-        Item(name, category, quantity, from_date, to_date, nullptr),
-    price(price), condition(condition), available(true) {}
-
-enum conditions Listing::getCondition() {
-    return this->condition;
-}
-
-void Listing::updateCondition(enum conditions new_condition) {
-    this->condition = new_condition;
-}
+Listing::Listing(Item* item_listed, int item_price, enum conditions item_condition)
+    : item_listed(item_listed), item_price(item_price), item_condition(item_condition) {}
 
 bool Listing::isAvailable() const {
-    return this->available;
+    return this->item_available;
+}
+
+Item* Listing::getItem() const {
+    return this->item_listed;
 }
 
 void Listing::bookItem() {
-    available = true;
+    // Might need some more work
+    this->item_available = false;
 }
 
 void Listing::freeItem() {
-    available = false;
+    // Might need some more work
+    this->item_available = true;
 }
 
-void Listing::printItem() {
-    cout << this->name << endl;
-    cout << this->category;
-    cout << "Condition: " << this->condition << endl;
-    cout << "Quantity: " << this->quantity << endl;
-    cout << "Availibility: " << this->from_date << " to " << "To: " << this->to_date << endl;
-    cout << "Price: " << this->price << endl;
+void Listing::printListing() {
+    this->item_listed->printItem();
+    cout << "Price: " << this->item_price << endl;
+    cout << "Condition: " << this->item_condition << endl;
 }
+
