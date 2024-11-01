@@ -1,2 +1,44 @@
 Testing github push (CLI)
 Testing github push from CLion
+
+Class descriptions:
+
+string separator:
+used when we want to separate data when printing to console
+eg: when printing all available listing, you can use ```cout << separator << endl;``` to separate the listings.
+
+Enum conditions:
+this Enum is used to inform us about the quality of the item listed/requested
+
+Enum categories:
+this Enum is used to inform us about the category of the item. It will be useful in filtering listings
+
+Notification class:
+This is the interactivity element in our project. It enables communications between users.
+There are mainly 3 types of notifications:
+- request item: sent from a potential borrow to owner of item requesting the item to borrow
+- accept borrower: sent from owner of item to potential borrower accepting the sharing of the item
+- reject borrower: sent from owner of item to potential borrower rejecting the sharing of the item
+(The type of notification is represented by ```string type``` attribute. If you like, you can change it to an Enum or int or whatever you like.)
+The notification is sent and managed by the functions in the manager class. Printing the notification is dependant on the type of notification.
+
+Item class:
+This is the class mimicking the real life item. In case of listing, the from and to dates represents the from when to when is the item available to rent. In case of request, they represent from when to when the borrower wants the item.
+\
+ -> Specific TODOs: Make a itemID generator such that no 2 items share the same itemID, mechanism to verify whether a date is valid or not.
+
+Listing class:
+This class mimics a real life listing. It has a pointer to the item it is referring to and additional attributes.
+
+User class:
+This class is the representation of a user in our project.
+
+Manager class:
+This is the ultimate class. It manages all the other classes and handles tasks ranging from registering a new user to approval of rental of items. It has a list of users and listings. When logged it, the current_user is loaded with the appropriate user.
+\
+ -> Specific TODOs: Sharing coins mechanism, method to filter listings and give a vector of appropriate listings, show requests, mechanism to verify whether dates are valid or not
+
+Main program:
+\
+ -> Specific TODOs: Make a proper running prototype of the main program with a Manager class and user input outputs. 
+
