@@ -2,6 +2,8 @@
 
 using namespace std;
 
+// This file contains both the item_class and the listing_class.
+
 // Item class
 
 Item::Item(string &name, enum categories category, int &quantity, string &from_date, string &to_date, User *owner) :
