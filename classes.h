@@ -43,7 +43,7 @@ protected:
     // bool fulfilled;
     enum categories category;
     int quantity;
-    string from_date;
+    string from_date; // date should be of the form "DD-MM-YYYY"
     string to_date;
 
 public:
