@@ -99,7 +99,10 @@ private:
 public:
     User(string &username, string &password);  // Create a user with 100 coins
 
-    bool authenticate(string &entered_username, string &entered_password) const;  // returns true if entered_username and entered_password are correct
+    bool authenticate(string &entered_username, string &entered_password) const  // returns true if entered_username and entered_password are correct
+    {
+        return username == entered_username && password == entered_password;
+    }
     string getUsername() const;
 
     void listItem(Listing* listing);
