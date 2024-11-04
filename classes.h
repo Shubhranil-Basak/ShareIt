@@ -64,13 +64,41 @@ protected:
 
 public:
     Item(string &name, enum categories category, int &quantity, string &from_date, string &to_date, User *owner);
-    string getName() const;
-    User *getOwner() const;
-    User *getBorrower() const;
-    enum categories getCategory() const;
-    int getQuantity() const;
-    string getFromDate() const;
-    string getToDate() const;
+
+    string getName() const
+    {
+        return name;
+    }
+
+    User *getOwner() const
+    {
+        return owner;
+    }
+
+    User *getBorrower() const
+    {
+        return borrower;
+    }
+
+    enum categories getCategory() const
+    {
+        return category;
+    }
+
+    int getQuantity() const
+    {
+        return quantity;
+    }
+
+    string getFromDate() const
+    {
+        return from_date;
+    }
+    
+    string getToDate() const
+    {
+        return to_date;
+    }
 
     void updateQuantity(int new_quantity);
     void updateFromDate(string new_from_date);
