@@ -119,11 +119,12 @@ void Item::updateToDate(string new_to_date) {
     this->to_date = new_to_date;
 }
 
+// Print details of Item
 void Item::printItem() {
-    cout << this->name << endl;
-    cout << this->category;
-    cout << "Quantity: " << this->quantity << endl;
-    cout << "Availability: " << this->from_date << " to " << "To: " << this->to_date << endl;
+    cout << "Item Name: " << name << endl;
+    cout << "Category: " << category << endl;
+    cout << "Quantity: " << quantity << endl;
+    cout << "Availability: " << from_date << " to " << to_date << endl;
 }
 
 // Listing class

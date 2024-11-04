@@ -16,7 +16,7 @@ enum categories
     furniture,
     clothing,
     books,
-    sports,
+    sports_equipment,
     other
 };
 
@@ -50,55 +50,26 @@ public:
 
 class User;
 
-class Item
-{
+class Item {
 protected:
     string name;
-    User *owner;
-    User *borrower;
-    // bool fulfilled;
+    User* owner;
+    User* borrower;
     enum categories category;
     int quantity;
+    string from_date;
     string from_date; // date should be of the form "DD-MM-YYYY"
     string to_date;
 
 public:
     Item(string &name, enum categories category, int &quantity, string &from_date, string &to_date, User *owner);
-
-    string getName() const
-    {
-        return name;
-    }
-
-    User *getOwner() const
-    {
-        return owner;
-    }
-
-    User *getBorrower() const
-    {
-        return borrower;
-    }
-
-    enum categories getCategory() const
-    {
-        return category;
-    }
-
-    int getQuantity() const
-    {
-        return quantity;
-    }
-
-    string getFromDate() const
-    {
-        return from_date;
-    }
-    
-    string getToDate() const
-    {
-        return to_date;
-    }
+    string getName() const;
+    User* getOwner() const;
+    User* getBorrower() const;
+    enum categories getCategory() const;
+    int getQuantity() const;
+    string getFromDate() const;
+    string getToDate() const;
 
     void updateQuantity(int new_quantity);
     void updateFromDate(string new_from_date);
