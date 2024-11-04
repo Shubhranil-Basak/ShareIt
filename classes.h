@@ -103,7 +103,11 @@ public:
     {
         return username == entered_username && password == entered_password;
     }
-    string getUsername() const;
+
+    string getUsername() const
+    {
+        return username;
+    }
 
     void listItem(Listing* listing);
     void removeListing(Listing* listing);
