@@ -12,7 +12,7 @@ int main() {
         if (command == "help") {
             // print all available commands
             cout << "Commands available:" << endl;
-            if (manager.logged_in) {
+            if (!manager.logged_in) {
                 cout << "login -> To login into your account" << endl;
                 cout << "logout -> To log out of your account" << endl;
                 cout << "register -> To create a new account" << endl;
@@ -29,7 +29,7 @@ int main() {
                 cout << "request coins -> To request coins from a friend" << endl;
             }
         }
-        if (manager.logged_in) {
+        if (!manager.logged_in) {
             if (command == "login") {
                 // login logic
             }
