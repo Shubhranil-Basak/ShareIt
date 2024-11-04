@@ -126,9 +126,28 @@ public:
 
     bool logged_in = false;  // True if a user is logged in
 
-    void registerUser(string username, string password);  // Adds a new user to the users vector
-    bool login(string &username, string &password);  // updates current_user if valid username and password
-    void logout();  // sets current_user to NULL
+    void registerUser(string username, string password)  // Adds a new user to the users vector
+    {
+        users.push_back(new User(username, password));
+    }
+
+    bool login(string &username, string &password)  // updates current_user if valid username and password
+    {
+        for (auto &user : users) {
+            if (user->authenticate(username, password)) {
+                current_user = user;
+                logged_in = true;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    void logout()  // sets current_user to NULL
+    {
+        current_user = NULL;
+        logged_in = false;
+    }
 
     void printListings() const;
     void printNotifications() const;
