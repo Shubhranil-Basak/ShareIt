@@ -3,15 +3,30 @@
 using namespace std;
 
 const string separator = "------------------------------------------------------------";
-enum conditions {excellent, good, fair, poor};
-enum categories {electronics, furniture, clothing, books, sports, other};
+enum conditions
+{
+    excellent,
+    good,
+    fair,
+    poor
+};
+enum categories
+{
+    electronics,
+    furniture,
+    clothing,
+    books,
+    sports,
+    other
+};
 
 enum categories stringToCategory(string &category);
 string categoryToString(enum categories category);
 enum conditions stringToCondition(string &condition);
 string conditionToString(enum conditions condition);
 
-class Notification {
+class Notification
+{
 private:
     string from_username;
     string to_username;
@@ -35,11 +50,12 @@ public:
 
 class User;
 
-class Item {
+class Item
+{
 protected:
     string name;
-    User* owner;
-    User* borrower;
+    User *owner;
+    User *borrower;
     // bool fulfilled;
     enum categories category;
     int quantity;
@@ -49,8 +65,8 @@ protected:
 public:
     Item(string &name, enum categories category, int &quantity, string &from_date, string &to_date, User *owner);
     string getName() const;
-    User* getOwner() const;
-    User* getBorrower() const;
+    User *getOwner() const;
+    User *getBorrower() const;
     enum categories getCategory() const;
     int getQuantity() const;
     string getFromDate() const;
@@ -63,7 +79,8 @@ public:
     virtual void printItem();
 };
 
-class Listing: public Item {
+class Listing : public Item
+{
 private:
     bool available;
     int price;
@@ -85,21 +102,21 @@ public:
 //     void printItem();
 // };
 
-
-class User {
+class User
+{
 private:
     string username;
     string password;
     int coins;
-    vector<Item*> requested_items;
-    vector<Listing*> listings;
-    vector<Item*> borrowed_items;
-    vector<Notification*> notifications;
+    vector<Item *> requested_items;
+    vector<Listing *> listings;
+    vector<Item *> borrowed_items;
+    vector<Notification *> notifications;
 
 public:
-    User(string &username, string &password);  // Create a user with 100 coins
+    User(string &username, string &password); // Create a user with 100 coins
 
-    bool authenticate(string &entered_username, string &entered_password) const  // returns true if entered_username and entered_password are correct
+    bool authenticate(string &entered_username, string &entered_password) const // returns true if entered_username and entered_password are correct
     {
         return username == entered_username && password == entered_password;
     }
@@ -109,12 +126,12 @@ public:
         return username;
     }
 
-    void listItem(Listing* listing);
-    void removeListing(Listing* listing);
-    
-    void requestItem(Item* requested_item);
+    void listItem(Listing *listing);
+    void removeListing(Listing *listing);
+
+    void requestItem(Item *requested_item);
     void removeRequest(string &name);
-    void borrowItem(Item* item);
+    void borrowItem(Item *item);
 
     void printNotifications() const;
 
@@ -122,26 +139,29 @@ public:
     bool spendCoins(int coins_to_spend);
 };
 
-class Manager {
+class Manager
+{
 private:
-    vector<User*> users;
-    User* current_user{};
-    vector<Listing*> listings;
+    vector<User *> users;
+    User *current_user{};
+    vector<Listing *> listings;
 
 public:
     Manager() = default;
 
-    bool logged_in = false;  // True if a user is logged in
+    bool logged_in = false; // True if a user is logged in
 
-    void registerUser(string username, string password)  // Adds a new user to the users vector
+    void registerUser(string username, string password) // Adds a new user to the users vector
     {
         users.push_back(new User(username, password));
     }
 
-    bool login(string &username, string &password)  // updates current_user if valid username and password
+    bool login(string &username, string &password) // updates current_user if valid username and password
     {
-        for (auto &user : users) {
-            if (user->authenticate(username, password)) {
+        for (auto &user : users)
+        {
+            if (user->authenticate(username, password))
+            {
                 current_user = user;
                 logged_in = true;
                 return true;
@@ -150,7 +170,7 @@ public:
         return false;
     }
 
-    void logout()  // sets current_user to NULL
+    void logout() // sets current_user to NULL
     {
         current_user = NULL;
         logged_in = false;
@@ -163,13 +183,13 @@ public:
                     string from_date, string to_date, string condition);
     void removeListing(string &name);
     void addRequest(string name, string category, int quantity, string from_date, string to_date);
-        // Adds a new request to the current_user's requested_items vector. It also searches through the listings vector of all users to find the item
+    // Adds a new request to the current_user's requested_items vector. It also searches through the listings vector of all users to find the item
     void removeRequest(string name);
 
-    vector<Listing*> searchListings(Item* item);  // Returns a vector of items that match the search criteria
-    void borrowItem(Listing *item_to_borrow);  // Adds the item to the current_user's borrowed_items vector and removes it from the owner's listings vector
+    vector<Listing *> searchListings(Item *item); // Returns a vector of items that match the search criteria
+    void borrowItem(Listing *item_to_borrow);     // Adds the item to the current_user's borrowed_items vector and removes it from the owner's listings vector
 
-    void shareCoins(string &receiving_username, int coins_to_share);  // Transfers coins_to_share from the current_user to the receiving_user
+    void shareCoins(string &receiving_username, int coins_to_share); // Transfers coins_to_share from the current_user to the receiving_user
 };
 
 // TODO: Make a itemID attribute
