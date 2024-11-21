@@ -57,7 +57,6 @@ protected:
     User* borrower;
     enum categories category;
     int quantity;
-    string from_date;
     string from_date; // date should be of the form "DD-MM-YYYY"
     string to_date;
 
@@ -80,7 +79,7 @@ public:
 
 class Listing : public Item
 {
-private:
+private:    
     bool available;
     int price;
     enum conditions condition;
@@ -136,6 +135,10 @@ public:
 
     void acceptCoins(int coins_given);
     bool spendCoins(int coins_to_spend);
+    void addNotification(Notification *notification);
+    void removeNotification(Notification *notification);
+    void clearNotifications();
+    int getCoinBalance() const;   
 };
 
 class Manager
