@@ -41,3 +41,4 @@ void Notification::printNotification() {
     cout << separator << endl;
     cout << "Message: " << this->message << endl;
 }
+
