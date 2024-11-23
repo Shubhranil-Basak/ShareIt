@@ -2,7 +2,7 @@
 
 using namespace std;
 
-enum categories stringToCategory(string &category) {
+categories stringToCategory(string &category) {
     if (category == "electronics") {
         return electronics;
     } else if (category == "furniture") {
@@ -18,7 +18,7 @@ enum categories stringToCategory(string &category) {
     }
 }
 
-string categoryToString(enum categories category) {
+string categoryToString(categories category) {
     switch (category) {
         case electronics:
             return "electronics";
@@ -35,7 +35,7 @@ string categoryToString(enum categories category) {
     }
 }
 
-enum conditions stringToCondition(string &condition) {
+conditions stringToCondition(string &condition) {
     if (condition == "excellent") {
         return excellent;
     } else if (condition == "good") {
@@ -49,7 +49,7 @@ enum conditions stringToCondition(string &condition) {
     }
 }
 
-string conditionToString(enum conditions condition) {
+string conditionToString(conditions condition) {
     switch (condition) {
         case excellent:
             return "excellent";
@@ -64,7 +64,7 @@ string conditionToString(enum conditions condition) {
     }
 }
 
-string typeToString(enum notificationTypes type) {
+string typeToString(notificationTypes type) {
     switch (type) {
         case requestOwnerToBorrowItem:
             return "request";
@@ -77,7 +77,7 @@ string typeToString(enum notificationTypes type) {
     }
 }
 
-enum notificationTypes stringToType(string &type) {
+notificationTypes stringToType(string &type) {
     if (type == "request") {
         return requestOwnerToBorrowItem;
     } else if (type == "accept") {
@@ -144,6 +144,5 @@ bool areValidateDates(const string& from_date, const string& to_date) {
     }
     return true;
 }
-
 
 

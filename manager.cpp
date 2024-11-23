@@ -1,5 +1,4 @@
 #include "classes.h"
-#include "general.cpp"
 
 using namespace std;
 
@@ -55,8 +54,8 @@ void Manager::printNotificationActions(int notification_number) const {
 
 void Manager::addListing(string name, string category, int quantity, int price,
                          string from_date, string to_date, string condition) {
-    enum conditions condition_enum = stringToCondition(condition);
-    enum categories category_enum = stringToCategory(category);
+    conditions condition_enum = stringToCondition(condition);
+    categories category_enum = stringToCategory(category);
     if (condition_enum == INVALID) {
         cout << "Invalid condition. Please use 'excellent', 'good', 'fair', or 'poor'." << endl;
         return;
@@ -105,7 +104,7 @@ void Manager::removeListing(string &name) {
 }
 
 void Manager::addRequest(string name, string category, int quantity, string from_date, string to_date) {
-    enum categories category_enum = stringToCategory(category);
+    categories category_enum = stringToCategory(category);
     if (!areValidateDates(from_date, to_date)) {
         return;
     }

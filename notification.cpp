@@ -3,7 +3,7 @@
 using namespace std;
 
 Notification::Notification(string from_username, string to_username, Listing *listing_referred,
-                           enum notificationTypes type) :
+                           notificationTypes type) :
         from_username(from_username), to_username(to_username), listing_referred(listing_referred),
         type(type) {}
 
@@ -19,7 +19,7 @@ Listing *Notification::getListing() const {
     return listing_referred;
 }
 
-enum notificationTypes Notification::getType() const {
+notificationTypes Notification::getType() const {
     return type;
 }
 

@@ -1,5 +1,4 @@
 #include "classes.h"
-#include "general.cpp"
 
 #include <string>
 #include <regex>
@@ -11,11 +10,11 @@ using namespace std;
 
 // Item class
 
-Item::Item(string name, enum categories category, int quantity, string from_date, string to_date, User *user, User *borrower) :
+Item::Item(string name, categories category, int quantity, string from_date, string to_date, User *user, User *borrower) :
         name(name), category(category), quantity(quantity), from_date(from_date), to_date(to_date),
         owner(user), borrower(borrower) {}
 
-Item::Item(string &name, enum categories category, int &quantity, string &from_date, string &to_date) :
+Item::Item(string &name, categories category, int &quantity, string &from_date, string &to_date) :
         name(name), category(category), quantity(quantity), from_date(from_date), to_date(to_date),
         owner(nullptr), borrower(nullptr) {}
 
@@ -31,7 +30,7 @@ User* Item::getBorrower() const {
     return this->borrower;
 }
 
-enum categories Item::getCategory() const {
+categories Item::getCategory() const {
     return this->category;
 }
 
@@ -93,7 +92,7 @@ void Item::printItem() {
 
 // Listing class
 
-Listing::Listing(Item* item_listed, int item_price, enum conditions item_condition)
+Listing::Listing(Item* item_listed, int item_price, conditions item_condition)
         : item_listed(item_listed), item_price(item_price), item_condition(item_condition) {}
 
 bool Listing::isAvailable() const {
@@ -130,11 +129,11 @@ string Listing::getName() const {
     return this->item_listed->getName();
 }
 
-enum categories Listing::getCategory() const {
+categories Listing::getCategory() const {
     return this->item_listed->getCategory();
 }
 
-enum conditions Listing::getCondition() const {
+conditions Listing::getCondition() const {
     return this->item_condition;
 }
 

@@ -1,3 +1,6 @@
+#ifndef CLASSES_H
+#define CLASSES_H
+
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -28,10 +31,15 @@ enum notificationTypes
     rejectBorrower
 };
 
-enum categories stringToCategory(string &category);
-string categoryToString(enum categories category);
-enum conditions stringToCondition(string &condition);
-string conditionToString(enum conditions condition);
+categories stringToCategory(string &category);
+string categoryToString(categories category);
+conditions stringToCondition(string &condition);
+string conditionToString(conditions condition);
+string typeToString(notificationTypes type);
+notificationTypes stringToType(string &type);
+bool isValidDate(const string& date, int &day, int &month, int &year);
+int compareDates(const string& date1, const string& date2);
+bool areValidateDates(const string& from_date, const string& to_date);
 
 class User;
 
@@ -40,19 +48,19 @@ protected:
     string name;
     User* owner;
     User* borrower;
-    enum categories category;
+    categories category;
     int quantity;
     string from_date; // date should be of the form "DD-MM-YYYY"
     string to_date;
 
 public:
-    Item(string name, enum categories category, int quantity, string from_date, string to_date,
+    Item(string name, categories category, int quantity, string from_date, string to_date,
          User *user, User *borrower = nullptr);
-    Item(string &name, enum categories category, int &quantity, string &from_date, string &to_date);
+    Item(string &name, categories category, int &quantity, string &from_date, string &to_date);
     string getName() const;
     User* getOwner() const;
     User* getBorrower() const;
-    enum categories getCategory() const;
+    categories getCategory() const;
     int getQuantity() const;
     string getFromDate() const;
     string getToDate() const;
@@ -69,10 +77,10 @@ private:
     Item* item_listed;
     bool item_available;
     int item_price;
-    enum conditions item_condition;
+    conditions item_condition;
 
 public:
-    Listing(Item* item_listed, int item_price, enum conditions item_condition);
+    Listing(Item* item_listed, int item_price, conditions item_condition);
     bool isAvailable() const;
     Item* getItem() const;
     void bookItem();
@@ -101,17 +109,17 @@ private:
     string from_username;
     string to_username;
     Listing* listing_referred;
-    enum notificationTypes type;
+    notificationTypes type;
 
 public:
-    Notification(string from_username, string to_username, Listing *listing_referred, enum notificationTypes type);
+    Notification(string from_username, string to_username, Listing *listing_referred, notificationTypes type);
     void printNotification();
 
     string getToUsername() const;
 
     string getFromUsername() const;
 
-    enum notificationTypes getType() const;
+    notificationTypes getType() const;
 
     Listing *getListing() const;
 
@@ -131,10 +139,11 @@ private:
 
 public:
     User(string username, string password); // Create a user with 100 coins
+    ~User(); // Destructor
 
-    bool authenticate(string &entered_username, string &entered_password) const // returns true if entered_username and entered_password are correct
+    bool authenticate(string &entered_username, string &entered_password) const; // returns true if entered_username and entered_password are correct
 
-    string getUsername() const
+    string getUsername() const;
 
     void listItem(Listing *listing);
     void removeListing(Listing *listing);
@@ -152,8 +161,6 @@ public:
     void clearNotifications();
     int getCoinBalance() const;
 
-    string getUsername() const;
-    void listItem(Listing *listing);
     vector<Item*> getRequestedItems() const;
 
     Notification *getNotification(int notification_number) const;
@@ -212,3 +219,5 @@ public:
 // TODO: Make a show requests method
 // TODO: Make a search listing/item by itemID (useful when notification arrives)
 // TODO: Negotiation system, maybe later on
+
+#endif
