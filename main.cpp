@@ -6,6 +6,8 @@ using namespace std;
 int main() {
     Manager manager;
     string command;
+    string username, password, action, name, category, condition, from_date, to_date;
+    int quantity, notification_number;
     while (true) {
         cout << ">> ";
         cin >> command;
@@ -29,15 +31,30 @@ int main() {
                 cout << "request coins -> To request coins from a friend" << endl;
             }
         }
+        if (command == "exit") {
+            break;
+        }
         if (!manager.logged_in) {
             if (command == "login") {
                 // login logic
+                cout << "Enter username: ";
+                cin >> username;
+                cout << "Enter password: ";
+                cin >> password;
+                manager.login(username, password);
             }
             else if (command == "logout")  {
                 // logout logic
+                manager.logout();
             }
             else if (command == "register") {
                 // register logic
+                cout << "Enter username: ";
+                cin >> username;
+                cout << "Enter password: ";
+                cin >> password;
+                manager.registerUser(username, password);
+                manager.login(username, password);
             }
             else {
                 cout << "Invalid command!" << endl;
@@ -46,30 +63,76 @@ int main() {
         else {
             if (command == "print listings") {
                 // print all listings
+                manager.printListings();
             }
             else if (command == "print notifications") {
                 // print all notifications
+                manager.printNotifications();
+                cout << "\nDo you want to take any actions on the notifications? (yes/no): ";
+                cin >> action;
+                if (action == "no") {
+                    continue;
+                }
+                cout << "Enter the notification number you want to take action on: ";
+                cin >> notification_number;
+                manager.printNotificationActions(notification_number);
+                cout << "Enter the action you want to take: ";
+                cin >> action;
+                manager.replyToNotification(notification_number, action);
             }
             else if (command == "add listing") {
                 // add a new listing
+                cout << "Enter item name: ";
+                cin >> name;
+                cout << "Enter category: ";
+                cin >> category;
+                cout << "Enter quantity: ";
+                cin >> quantity;
+                cout << "Enter from date: ";
+                cin >> from_date;
+                cout << "Enter to date: ";
+                cin >> to_date;
+                cout << "Enter condition: ";
+                cin >> condition;
+                manager.addListing(name, category, quantity, 0, from_date, to_date, condition);
             }
             else if (command == "remove listing") {
                 // remove a listing
+                cout << "Enter item name: ";
+                cin >> name;
+                manager.removeListing(name);
             }
             else if (command == "request item") {
                 // request an item
+                cout << "Enter item name: ";
+                cin >> name;
+                cout << "Enter category: ";
+                cin >> category;
+                cout << "Enter quantity: ";
+                cin >> quantity;
+                cout << "Enter from date: ";
+                cin >> from_date;
+                cout << "Enter to date: ";
+                cin >> to_date;
+                manager.addRequest(name, category, quantity, from_date, to_date);
             }
             else if (command == "show requests") {
                 // show all requests
+                manager.printRequests();
             }
             else if (command == "remove request") {
                 // remove a request
+                cout << "Enter item name: ";
+                cin >> name;
+                manager.removeRequest(name);
             }
             else if (command == "send coins") {
                 // send coins to a friend
-            }
-            else if (command == "request coins") {
-                // request coins from a friend
+                cout << "Enter receiving username: ";
+                cin >> username;
+                cout << "Enter coins to send: ";
+                cin >> quantity;
+                manager.shareCoins(username, quantity);
             }
             else {
                 cout << "Invalid command!" << endl;

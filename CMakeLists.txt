@@ -8,8 +8,8 @@ include_directories(.)
 add_executable(ShareIt_project
         classes.h
         general.cpp
-        item_classes.cpp
-        manager.cpp
+        item_listing_classes.cpp
         notification.cpp
         user.cpp
-        main.cpp)
+        main.cpp
+        manager.cpp)

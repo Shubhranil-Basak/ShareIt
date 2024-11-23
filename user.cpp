@@ -79,7 +79,7 @@
 using namespace std;
 
 // Constructor
-User::User(string &username, string &password)
+User::User(string username, string password)
     : username(username), password(password), coins(100) {}
 
 // Authentication
@@ -110,6 +110,10 @@ void User::removeListing(Listing *listing) {
     listing_to_del = nullptr;
 }
 
+vector<Item*> User::getRequestedItems() const {
+    return this->requested_items;
+}
+
 // Request Management
 void User::requestItem(Item *requested_item) {
     this->requested_items.push_back(requested_item);
@@ -137,14 +141,32 @@ void User::borrowItem(Item *item) {
 void User::printNotifications() const {
     cout << "Notifications (Total: " << this->notifications.size() << ")" << endl;
     cout << separator << endl;
-    for (Notification *notification : this->notifications) {
-        notification->printNotification();
+    for (int i = 0; i < this->notifications.size(); i++) {
+        cout << "----" << i + 1 << ":";
+        notifications[i]->printNotification();
         cout << separator << endl;
     }
 }
 
+Notification *User::getNotification(int notification_number) const {
+    return this->notifications[notification_number];
+}
+
 void User::addNotification(Notification *notification) {
     this->notifications.push_back(notification);
+}
+
+void User::removeNotification(Notification *notification) {
+    Notification *notification_to_del = nullptr;
+    for (size_t i = 0; i < this->notifications.size(); i++) {
+        if (this->notifications[i] == notification) {
+            notification_to_del = this->notifications[i];
+            this->notifications.erase(this->notifications.begin() + i);
+            break;
+        }
+    }
+    delete notification_to_del;
+    notification_to_del = nullptr;
 }
 
 void User::clearNotifications() {

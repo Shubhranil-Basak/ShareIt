@@ -2,43 +2,48 @@
 
 using namespace std;
 
-Notification::Notification(string &from_username, string &to_username, string &message, string &date, string &time) :
-    from_username(from_username), to_username(to_username), message(message), date(date), time(time), isRead(false) {}
+Notification::Notification(string from_username, string to_username, Listing *listing_referred,
+                           enum notificationTypes type) :
+        from_username(from_username), to_username(to_username), listing_referred(listing_referred),
+        type(type) {}
 
-
-void Notification::markAsRead() {
-    this->isRead = true;
+string Notification::getToUsername() const {
+    return to_username;
 }
 
 string Notification::getFromUsername() const {
-    return this->from_username;
+    return from_username;
 }
 
-string Notification::getToUsername() const {
-    return this->to_username;
+Listing *Notification::getListing() const {
+    return listing_referred;
 }
 
-string Notification::getMessage() const {
-    return this->message;
-}
-
-string Notification::getDate() const {
-    return this->date;
-}
-
-string Notification::getTime() const {
-    return this->time;
-}
-
-bool Notification::getIsRead() const {
-    return this->isRead;
+enum notificationTypes Notification::getType() const {
+    return type;
 }
 
 void Notification::printNotification() {
-    this->markAsRead();
-    cout << "From: " << this->from_username << "     |     " << "To: " << this->to_username 
-            << "     |     " << this->date << " " << this->time << endl;
-    cout << separator << endl;
-    cout << "Message: " << this->message << endl;
+    if (type == requestOwnerToBorrowItem) {
+        cout << "User " << from_username << " has requested to borrow " << listing_referred->getName() << "." << endl;
+    }
+    else if (type == acceptBorrower) {
+        cout << "User " << from_username << " has accepted your request to borrow " << listing_referred->getName() << "." << endl;
+    }
+    else if (type == rejectBorrower) {
+        cout << "User " << from_username << " has rejected your request to borrow " << listing_referred->getName() << "." << endl;
+    }
 }
 
+void Notification::printActions() const {
+    if (type == requestOwnerToBorrowItem) {
+        cout << "yes: accept the requester to borrow " << this->listing_referred->getName() << endl;
+        cout << "no: reject the requester to borrow " << this->listing_referred->getName() << endl;
+    }
+    else if (type == acceptBorrower) {
+        cout << "no actions available." << endl;
+    }
+    else if (type == rejectBorrower) {
+        cout << "no actions available." << endl;
+    }
+}

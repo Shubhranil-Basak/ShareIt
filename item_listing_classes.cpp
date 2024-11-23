@@ -1,4 +1,5 @@
 #include "classes.h"
+#include "general.cpp"
 
 #include <string>
 #include <regex>
@@ -10,9 +11,13 @@ using namespace std;
 
 // Item class
 
-Item::Item(string &name, enum categories category, int &quantity, string &from_date, string &to_date, User *owner) :
-    name(name), category(category), quantity(quantity), from_date(from_date), to_date(to_date),
-    owner(owner), borrower(nullptr) {}
+Item::Item(string name, enum categories category, int quantity, string from_date, string to_date, User *user, User *borrower) :
+        name(name), category(category), quantity(quantity), from_date(from_date), to_date(to_date),
+        owner(user), borrower(borrower) {}
+
+Item::Item(string &name, enum categories category, int &quantity, string &from_date, string &to_date) :
+        name(name), category(category), quantity(quantity), from_date(from_date), to_date(to_date),
+        owner(nullptr), borrower(nullptr) {}
 
 string Item::getName() const {
     return this->name;
@@ -47,47 +52,6 @@ void Item::updateQuantity(int new_quantity) {
 }
 
 // Dates should be of the form "DD-MM-YYYY"
-
-// Function to validate the date format and extract day, month, year
-bool isValidDate(const string& date, int &day, int &month, int &year) {
-    // Check if date matches the "DD-MM-YYYY" format
-    regex date_pattern(R"(^(\d{2})-(\d{2})-(\d{4})$)");
-    smatch match;
-    
-    if (regex_match(date, match, date_pattern)) {
-        day = stoi(match[1]);
-        month = stoi(match[2]);
-        year = stoi(match[3]);
-        
-        // Basic validation for day, month, and year ranges
-        if (year >= 1900 && year <= 4000 && month >= 1 && month <= 12) { // hoping this is used till the year 4000 XD
-            // Check day validity based on month
-            if ((day >= 1 && day <= 31) && (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12)) {
-                return true;
-            } else if ((day >= 1 && day <= 30) && (month == 4 || month == 6 || month == 9 || month == 11)) {
-                return true;
-            } else if ((day >= 1 && day <= 28) && (month == 2)) {
-                return true;
-            } else if (day == 29 && month == 2 && ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0))) {
-                return true; // Leap year check
-            }
-        }
-    }
-    return false;
-}
-
-// Function to compare two dates (returns -1 if date1 < date2, 0 if equal, 1 if date1 > date2)
-int compareDates(const string& date1, const string& date2) {
-    int day1, month1, year1, day2, month2, year2;
-    isValidDate(date1, day1, month1, year1);
-    isValidDate(date2, day2, month2, year2);
-
-    if (year1 != year2) return year1 < year2 ? -1 : 1;
-    if (month1 != month2) return month1 < month2 ? -1 : 1;
-    if (day1 != day2) return day1 < day2 ? -1 : 1;
-    
-    return 0;
-}
 
 void Item::updateFromDate(string new_from_date) {
     int day, month, year;
@@ -129,36 +93,55 @@ void Item::printItem() {
 
 // Listing class
 
-Listing::Listing(string name, enum categories category, int quantity, int price,
-        string from_date, string to_date, enum conditions condition):
-        Item(name, category, quantity, from_date, to_date, nullptr),
-    price(price), condition(condition), available(true) {}
-
-enum conditions Listing::getCondition() {
-    return this->condition;
-}
-
-void Listing::updateCondition(enum conditions new_condition) {
-    this->condition = new_condition;
-}
+Listing::Listing(Item* item_listed, int item_price, enum conditions item_condition)
+        : item_listed(item_listed), item_price(item_price), item_condition(item_condition) {}
 
 bool Listing::isAvailable() const {
-    return this->available;
+    return this->item_available;
+}
+
+Item* Listing::getItem() const {
+    return this->item_listed;
 }
 
 void Listing::bookItem() {
-    available = true;
+    // Might need some more work
+    this->item_available = false;
 }
 
 void Listing::freeItem() {
-    available = false;
+    // Might need some more work
+    this->item_available = true;
+}
+
+void Listing::printListing() {
+    this->item_listed->printItem();
+    cout << "Price: " << this->item_price << endl;
+    cout << "Condition: " << this->item_condition << endl;
 }
 
 void Listing::printItem() {
-    cout << this->name << endl;
-    cout << this->category;
-    cout << "Condition: " << this->condition << endl;
-    cout << "Quantity: " << this->quantity << endl;
-    cout << "Availibility: " << this->from_date << " to " << "To: " << this->to_date << endl;
-    cout << "Price: " << this->price << endl;
+    this->item_listed->printItem();
+    cout << "Price: " << this->item_price << endl;
+    cout << "Condition: " << this->item_condition << endl;
+}
+
+string Listing::getName() const {
+    return this->item_listed->getName();
+}
+
+enum categories Listing::getCategory() const {
+    return this->item_listed->getCategory();
+}
+
+enum conditions Listing::getCondition() const {
+    return this->item_condition;
+}
+
+int Listing::getQuantity() const {
+    return this->item_listed->getQuantity();
+}
+
+User* Listing::getOwner() const {
+    return this->item_listed->getOwner();
 }
