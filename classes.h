@@ -37,6 +37,8 @@ conditions stringToCondition(string &condition);
 string conditionToString(conditions condition);
 string typeToString(notificationTypes type);
 notificationTypes stringToType(string &type);
+void printAvailableConditions();
+void printAvailableCategories();
 bool isValidDate(const string& date, int &day, int &month, int &year);
 int compareDates(const string& date1, const string& date2);
 bool areValidateDates(const string& from_date, const string& to_date);
@@ -125,7 +127,7 @@ public:
 
     Listing *getListing() const;
 
-    void printActions() const;
+    bool printActions() const;
 };
 
 class User
@@ -170,6 +172,16 @@ public:
     void printBorrowedItems() const;
 
     int getNumberOfNotifications() const;
+
+    void removeNotification(int notification_number);
+
+    vector<Listing *> getListings() const;
+
+    void removeRequest(int request_number);
+
+    vector<Item *> getBorrowedItems() const;
+
+    void returnItem(int borrowed_number);
 };
 
 class Manager
@@ -217,13 +229,27 @@ public:
 
     void replyToNotification(int notification_number, string &action);
 
-    void printNotificationActions(int notification_number) const;
+    bool printNotificationActions(int notification_number) const;
 
     void printBorrowedItems() const;
 
     int getBalance() const;
 
     int getNumberOfNotifications() const;
+
+    void printMyListings() const;
+
+    void printMyRequests() const;
+
+    void removeRequest(int request_number);
+
+    void requestOwnerToBorrow(int listing_number);
+
+    bool userExists(string username) const;
+
+    void returnItem(int borrowed_number);
+
+    bool isNotCurrentUser(string username) const;
 };
 
 // TODO: Make a itemID attribute

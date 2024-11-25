@@ -87,10 +87,28 @@ notificationTypes stringToType(string &type) {
     }
 }
 
+void printAvailableConditions() {
+    cout << "Available conditions: excellent, good, fair, poor" << endl;
+}
+
+void printAvailableCategories() {
+    cout << "Available categories: electronics, furniture, clothing, books, sports, other\n";
+}
+
+//template<typename EnumType>
+//void printEnum(const std::string &enumName, EnumType begin, EnumType end, const std::function<std::string(EnumType)> &toStringFunc) {
+//    std::cout << "Available " << enumName << ":\n";
+//    for (EnumType value = begin; value <= end; value = static_cast<EnumType>(static_cast<int>(value) + 1)) {
+//        std::cout << "  " << static_cast<int>(value) << ": " << toStringFunc(value) << "\n";
+//    }
+//    std::cout << std::endl;
+//}
+
+
 // Function to validate the date format and extract day, month, year
 bool isValidDate(const string& date, int &day, int &month, int &year) {
     // Check if date matches the "DD-MM-YYYY" format
-    regex date_pattern(R"(^(\d{2})-(\d{2})-(\d{4})$)");
+    regex date_pattern(R"(^(\d{1,2})-(\d{1,2})-(\d{4})$)");
     smatch match;
 
     if (regex_match(date, match, date_pattern)) {

@@ -123,6 +123,7 @@ void Listing::printItem() {
     this->item_listed->printItem();
     cout << "Price: " << this->item_price << endl;
     cout << "Condition: " << conditionToString(this->item_condition) << endl;
+    cout << "Availability: " << (this->item_available ? "Available" : "Not Available") << endl;
 }
 
 string Listing::getName() const {

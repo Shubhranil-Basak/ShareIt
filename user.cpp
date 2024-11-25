@@ -110,6 +110,10 @@ void User::removeListing(Listing *listing) {
     listing_to_del = nullptr;
 }
 
+vector<Listing*> User::getListings() const {
+    return this->listings;
+}
+
 vector<Item*> User::getRequestedItems() const {
     return this->requested_items;
 }
@@ -132,9 +136,24 @@ void User::removeRequest(string &name) {
     item_to_del = nullptr;
 }
 
+void User::removeRequest(int request_number) {
+    Item *item_to_del = this->requested_items[request_number];
+    this->requested_items.erase(this->requested_items.begin() + request_number);
+    delete item_to_del;
+    item_to_del = nullptr;
+}
+
 // Borrowing Management
 void User::borrowItem(Item *item) {
     this->borrowed_items.push_back(item);
+}
+
+vector<Item*> User::getBorrowedItems() const {
+    return this->borrowed_items;
+}
+
+void User::returnItem(int borrowed_number) {
+    this->borrowed_items.erase(this->borrowed_items.begin() + borrowed_number - 1);
 }
 
 // Notifications
@@ -173,10 +192,19 @@ void User::removeNotification(Notification *notification) {
     notification_to_del = nullptr;
 }
 
+void User::removeNotification(int notification_number) {
+    Notification *notification_to_del = this->notifications[notification_number];
+    this->notifications.erase(this->notifications.begin() + notification_number);
+    delete notification_to_del;
+    notification_to_del = nullptr;
+}
+
 void User::printBorrowedItems() const {
     cout << "Borrowed Items (Total: " << this->borrowed_items.size() << ")" << endl;
     cout << separator << endl;
+    int borrowed_number = 0;
     for (Item *item : this->borrowed_items) {
+        cout << "Borrowed Item " << ++borrowed_number << ":" << endl;
         item->printItem();
         cout << separator << endl;
     }

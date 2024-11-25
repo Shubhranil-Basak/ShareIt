@@ -35,15 +35,19 @@ void Notification::printNotification() {
     }
 }
 
-void Notification::printActions() const {
+bool Notification::printActions() const {
     if (type == requestOwnerToBorrowItem) {
         cout << "yes: accept the requester to borrow " << this->listing_referred->getName() << endl;
         cout << "no: reject the requester to borrow " << this->listing_referred->getName() << endl;
+        return true;
     }
     else if (type == acceptBorrower) {
         cout << "no actions available." << endl;
+        return false;
     }
     else if (type == rejectBorrower) {
         cout << "no actions available." << endl;
+        return false;
     }
+    return false;
 }

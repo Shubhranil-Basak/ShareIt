@@ -41,11 +41,44 @@ void Manager::logout() {
 void Manager::printListings() const {
     cout << "Listings (Total: " << this->listings.size() << ")" << endl;
     cout << separator << endl;
+    int listing_number = 0;
     for (Listing* listing: this->listings) {
-        if (listing->isAvailable()) {
-            listing->printItem();
-            cout << separator << endl;
-        }
+        cout << "Listing " << ++listing_number << ":" << endl;
+        listing->printItem();
+        cout << separator << endl;
+    }
+}
+
+void Manager::printMyListings() const {
+    cout << "My Listings (Total: " << this->current_user->getListings().size() << ")" << endl;
+    cout << separator << endl;
+    int listing_number = 0;
+    for (Listing* listing: this->current_user->getListings()) {
+        cout << "Listing " << ++listing_number << ":" << endl;
+        listing->printItem();
+        cout << separator << endl;
+    }
+}
+
+void Manager::printRequests() const {
+    cout << "Requests (Total: " << this->requests.size() << ")" << endl;
+    cout << separator << endl;
+    int request_number = 0;
+    for (Item *item: this->requests) {
+        cout << "Request " << ++request_number << ":" << endl;
+        item->printItem();
+        cout << separator << endl;
+    }
+}
+
+void Manager::printMyRequests() const {
+    cout << "Requests (Total: " << this->current_user->getRequestedItems().size() << ")" << endl;
+    cout << separator << endl;
+    int request_number = 0;
+    for (Item* item: this->current_user->getRequestedItems()) {
+        cout << "Request " << ++request_number << ":" << endl;
+        item->printItem();
+        cout << separator << endl;
     }
 }
 
@@ -57,8 +90,8 @@ int Manager::getNumberOfNotifications() const {
     return current_user->getNumberOfNotifications();
 }
 
-void Manager::printNotificationActions(int notification_number) const {
-    current_user->getNotification(notification_number - 1)->printActions();
+bool Manager::printNotificationActions(int notification_number) const {
+    return current_user->getNotification(notification_number - 1)->printActions();
 }
 
 void Manager::addListing(string name, string category, int quantity, int price,
@@ -85,9 +118,9 @@ void Manager::addListing(string name, string category, int quantity, int price,
     Listing* new_listing = new Listing(new_item, price, condition_enum);
     this->listings.push_back(new_listing);
     this->current_user->listItem(new_listing);
-    cout << "Item " << name << " added listing." << endl;
+    cout << "Item " << name << " is now listed!" << endl;
 
-    notifyRequestersAboutNewListing(new_listing);
+//    notifyRequestersAboutNewListing(new_listing);
 }
 
 void Manager::removeListing(string &name) {
@@ -127,20 +160,20 @@ void Manager::addRequest(string name, string category, int quantity, string from
     this->current_user->requestItem(new_request);
     requests.push_back(new_request);
 
-    notifyRequesterOfNewRequest(new_request);
+//    notifyRequesterOfNewRequest(new_request);
 }
 
 void Manager::removeRequest(string name) {
     this->current_user->removeRequest(name);
 }
 
-void Manager::printRequests() const {
-    cout << "Requests (Total: " << this->current_user->getRequestedItems().size() << ")" << endl;
-    cout << separator << endl;
-    for (Item* item: this->current_user->getRequestedItems()) {
-        item->printItem();
-        cout << separator << endl;
+void Manager::removeRequest(int request_number) {
+    if (request_number < 1 || request_number > this->current_user->getRequestedItems().size()) {
+        cout << "Invalid request number." << endl;
+        return;
     }
+    this->current_user->removeRequest(request_number - 1);
+    cout << "Request removed." << endl;
 }
 
 void Manager::printBorrowedItems() const {
@@ -196,6 +229,30 @@ bool Manager::notifyUser(Notification *notificationToSend) {
     return false;
 }
 
+void Manager::requestOwnerToBorrow(int listing_number) {
+    if (listing_number < 1 || listing_number > this->listings.size()) {
+        cout << "Invalid listing number." << endl;
+        return;
+    }
+    Listing *listing = this->listings[listing_number - 1];
+    if (!listing->isAvailable()) {
+        cout << "Listing is not available." << endl;
+        return;
+    }
+    if (listing->getOwner()->getUsername() == current_user->getUsername()) {
+        cout << "You cannot borrow your own item." << endl;
+        return;
+    }
+    if (current_user->getCoinBalance() < listing->getPrice()) {
+        cout << "You don't have enough coins to borrow this item." << endl;
+        return;
+    }
+    Notification *notification = new Notification(current_user->getUsername(), listing->getOwner()->getUsername(),
+                                                  listing, requestOwnerToBorrowItem);
+    notifyUser(notification);
+    cout << "Request sent to owner." << endl;
+}
+
 void Manager::notifyRequestersAboutNewListing(Listing *new_listing) {
     vector<Item*> search_results = searchRequestsForListing(new_listing);
     for (Item *request: search_results) {
@@ -220,7 +277,9 @@ void Manager::notifyRequesterOfNewRequest(Item *new_request) {
 
 void Manager::replyToNotification(int notification_number, string &action) {
     Notification *notification = current_user->getNotification(notification_number - 1);
+    // we need to delete the notification from user's notification now
     if (notification->getType() != requestOwnerToBorrowItem) {
+        current_user->removeNotification(notification_number - 1);
         return;
     }
     // notification is a request from borrower to owner to borrow an item
@@ -235,10 +294,15 @@ void Manager::replyToNotification(int notification_number, string &action) {
             }
         }
         if (listing->isAvailable()) {
+            if (borrower->getCoinBalance() < listing->getPrice()) {
+                cout << "Requester doesn't have enough coins to borrow the item." << endl;
+                return;
+            }
             borrowItem(listing, borrower);
             Notification *reply_notification = new Notification(current_user->getUsername(), notification->getFromUsername(),listing,acceptBorrower);
             notifyUser(reply_notification);
-        } else {
+        }
+        else {
             cout << "Item is no longer available." << endl;
         }
     } else if (action == "no") {
@@ -247,6 +311,7 @@ void Manager::replyToNotification(int notification_number, string &action) {
                                                             notification->getListing(), rejectBorrower);
         notifyUser(reply_notification);
     }
+    current_user->removeNotification(notification_number - 1);
 }
 
 
@@ -259,9 +324,36 @@ void Manager::borrowItem(Listing *item_to_borrow, User *borrower) {
     cout << "Item borrowed successfully." << endl;
 }
 
+void Manager::returnItem(int borrowed_number) {
+    if (borrowed_number < 1 || borrowed_number > current_user->getBorrowedItems().size()) {
+        cout << "Invalid borrowed item number." << endl;
+        return;
+    }
+    Item* borrowed_item = current_user->getBorrowedItems()[borrowed_number - 1];
+    User* item_owner = borrowed_item->getOwner();
+    Listing* listing = nullptr;
+    for (Listing* item_listing: item_owner->getListings()) {
+        if (item_listing->getItem() == borrowed_item) {
+            listing = item_listing;
+            break;
+        }
+    }
+    if (listing == nullptr) {
+        cout << "Error: borrowed item not found in owner's listings." << endl;
+        return;
+    }
+    listing->freeItem();
+    current_user->returnItem(borrowed_number - 1);
+    cout << "Item returned successfully." << endl;
+}
+
 void Manager::shareCoins(string &receiving_username, int coins_to_share) {
     // Assumed that a valid coins_to_share amount is given a.k.a 0 < coins_to_share <= user->coins
     bool shared = false;
+    if (coins_to_share <= 0) {
+        cout << "Invalid number of coins to share." << endl;
+        return;
+    }
     for (User* user: users) {
         if (user->getUsername() == receiving_username) {
             current_user->spendCoins(coins_to_share);
@@ -277,4 +369,14 @@ void Manager::shareCoins(string &receiving_username, int coins_to_share) {
 
 int Manager::getBalance() const {
     return current_user->getCoinBalance();
+}
+
+bool Manager::isNotCurrentUser(string username) const {
+    return current_user->getUsername() != username;
+}
+
+bool Manager::userExists(string username) const {
+    return std::any_of(users.begin(), users.end(), [&](const User* user) {
+        return user->getUsername() == username;
+    });
 }
