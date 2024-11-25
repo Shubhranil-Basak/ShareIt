@@ -168,6 +168,8 @@ public:
     Notification *getNotification(int notification_number) const;
 
     void printBorrowedItems() const;
+
+    int getNumberOfNotifications() const;
 };
 
 class Manager
@@ -220,6 +222,8 @@ public:
     void printBorrowedItems() const;
 
     int getBalance() const;
+
+    int getNumberOfNotifications() const;
 };
 
 // TODO: Make a itemID attribute

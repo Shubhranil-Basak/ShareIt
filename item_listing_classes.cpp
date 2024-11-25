@@ -116,13 +116,13 @@ void Listing::freeItem() {
 void Listing::printListing() {
     this->item_listed->printItem();
     cout << "Price: " << this->item_price << endl;
-    cout << "Condition: " << this->item_condition << endl;
+    cout << "Condition: " << conditionToString(this->item_condition) << endl;
 }
 
 void Listing::printItem() {
     this->item_listed->printItem();
     cout << "Price: " << this->item_price << endl;
-    cout << "Condition: " << this->item_condition << endl;
+    cout << "Condition: " << conditionToString(this->item_condition) << endl;
 }
 
 string Listing::getName() const {

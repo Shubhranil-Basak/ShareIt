@@ -48,6 +48,10 @@ void Manager::printNotifications() const {
     current_user->printNotifications();
 }
 
+int Manager::getNumberOfNotifications() const {
+    return current_user->getNumberOfNotifications();
+}
+
 void Manager::printNotificationActions(int notification_number) const {
     current_user->getNotification(notification_number - 1)->printActions();
 }

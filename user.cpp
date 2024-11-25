@@ -148,6 +148,10 @@ void User::printNotifications() const {
     }
 }
 
+int User::getNumberOfNotifications() const {
+    return this->notifications.size();
+}
+
 Notification *User::getNotification(int notification_number) const {
     return this->notifications[notification_number];
 }

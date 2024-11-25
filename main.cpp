@@ -7,7 +7,7 @@ int main() {
     Manager manager;
     string command;
     string username, password, action, name, category, condition, from_date, to_date;
-    int quantity, price, notification_number;
+    int quantity, price, notification_number, num_notifications;
 
     cout << "\nWelcome to the Inventory Management System!\n";
     cout << "Type 'help' to see available commands or 'exit' to quit.\n";
@@ -83,6 +83,10 @@ int main() {
                 manager.printListings();
             } else if (command == "print notifications") {
                 manager.printNotifications();
+
+                num_notifications = manager.getNumberOfNotifications();
+                if (num_notifications == 0)
+                    continue;
                 cout << "\nWould you like to take any action on notifications? (yes/no): ";
                 getline(cin, action);
                 if (action == "no") continue;
@@ -90,6 +94,10 @@ int main() {
                 cout << "Enter the notification number to act on: ";
                 getline(cin, command);  // Using command temporarily for input
                 notification_number = stoi(command);
+                if (notification_number < 1 || notification_number > num_notifications) {
+                    cout << "Invalid notification number.\n";
+                    continue;
+                }
                 manager.printNotificationActions(notification_number);
 
                 cout << "Enter the action to take: ";
