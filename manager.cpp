@@ -195,7 +195,7 @@ void Manager::notifyRequestersAboutNewListing(Listing *new_listing) {
 void Manager::notifyRequesterOfNewRequest(Item *new_request) {
     vector<Listing*> search_results = searchListingsForRequest(new_request);
     cout << "Found " << search_results.size() << " listings that match the request." << endl;
-    string from_username = new_request->getOwner()->getUsername();
+    string from_username = new_request->getBorrower()->getUsername();
     for (Listing *listing: search_results) {
         cout << "Notifying " << listing->getOwner()->getUsername() << " about the request." << endl;
         string owner_username = listing->getOwner()->getUsername();
