@@ -81,10 +81,10 @@ int main() {
                 manager.printListings();
             } else if (command == "print notifications") {
                 manager.printNotifications();
-
                 num_notifications = manager.getNumberOfNotifications();
                 if (num_notifications == 0)
                     continue;
+
                 cout << "\nWould you like to take any action on notifications? (yes/no): ";
                 getline(cin, action);
                 if (action == "no") continue;
