@@ -71,14 +71,12 @@ int main() {
                 cout << "Enter password: ";
                 getline(cin, password);
                 manager.registerUser(username, password);
-                manager.login(username, password);
             } else {
                 cout << "Invalid command! Type 'help' to see available commands.\n";
             }
         } else {
             if (command == "logout") {
                 manager.logout();
-                cout << "You have been logged out successfully.\n";
             } else if (command == "print listings") {
                 manager.printListings();
             } else if (command == "print notifications") {

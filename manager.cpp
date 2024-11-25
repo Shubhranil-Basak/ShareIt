@@ -3,15 +3,20 @@
 using namespace std;
 
 void Manager::registerUser(string username, string password) {
+    bool user_exists = false;
     for (User* existing_user: users) {
         if (existing_user->getUsername() == username) {
+            user_exists = true;
             cout << "user with username '" << username << "' already exists. Try another username." << endl;
             break;
         }
     }
-    User* new_user = new User(username, password);
-    this->users.push_back(new_user);
-    cout << "New user '" << username << "' is created! ";
+    if (!user_exists) {
+        User* new_user = new User(username, password);
+        this->users.push_back(new_user);
+        cout << "New user '" << username << "' is created! ";
+        cout << "Login to access your account" << endl;
+    }
 }
 
 bool Manager::login(string &username, string &password) {
