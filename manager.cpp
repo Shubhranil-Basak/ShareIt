@@ -11,7 +11,7 @@ void Manager::registerUser(string username, string password) {
     }
     User* new_user = new User(username, password);
     this->users.push_back(new_user);
-    cout << "New user '" << username << "' is created! Login to access account.";
+    cout << "New user '" << username << "' is created! ";
 }
 
 bool Manager::login(string &username, string &password) {
@@ -134,6 +134,10 @@ void Manager::printRequests() const {
     }
 }
 
+void Manager::printBorrowedItems() const {
+    current_user->printBorrowedItems();
+}
+
 vector<Listing*> Manager::searchListingsForRequest(Item* request) {
     vector<Listing*> search_results;
     for (Listing* listing: this->listings) {
@@ -214,9 +218,15 @@ void Manager::replyToNotification(int notification_number, string &action) {
     if (action == "yes") {
         // accept the requester
         Listing *listing = notification->getListing();
+        User* borrower;
+        for (User* user: users) {
+            if (user->getUsername() == notification->getFromUsername()) {
+                borrower = user;
+                break;
+            }
+        }
         if (listing->isAvailable()) {
-            listing->bookItem();
-            current_user->borrowItem(listing->getItem());
+            borrowItem(listing, borrower);
             Notification *reply_notification = new Notification(current_user->getUsername(), notification->getFromUsername(),listing,acceptBorrower);
             notifyUser(reply_notification);
         } else {
@@ -231,20 +241,31 @@ void Manager::replyToNotification(int notification_number, string &action) {
 }
 
 
-void Manager::borrowItem(Listing *item_to_borrow) {
+void Manager::borrowItem(Listing *item_to_borrow, User *borrower) {
 //    User* item_owner = item_to_borrow->getOwner();
-    current_user->borrowItem(item_to_borrow->getItem());
     item_to_borrow->bookItem();
+    borrower->borrowItem(item_to_borrow->getItem());
+    borrower->spendCoins(item_to_borrow->getPrice());
+    current_user->acceptCoins(item_to_borrow->getPrice());
+    cout << "Item borrowed successfully." << endl;
 }
 
 void Manager::shareCoins(string &receiving_username, int coins_to_share) {
     // Assumed that a valid coins_to_share amount is given a.k.a 0 < coins_to_share <= user->coins
+    bool shared = false;
     for (User* user: users) {
         if (user->getUsername() == receiving_username) {
             current_user->spendCoins(coins_to_share);
             user->acceptCoins(coins_to_share);
+            shared = true;
+            cout << "Coins shared successfully." << endl;
             break;
         }
     }
-    cout << "Transaction failed: user '" << receiving_username << "' doesn't exist." << endl;
+    if (!shared)
+        cout << "Transaction failed: user '" << receiving_username << "' doesn't exist." << endl;
+}
+
+int Manager::getBalance() const {
+    return current_user->getCoinBalance();
 }

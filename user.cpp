@@ -169,6 +169,15 @@ void User::removeNotification(Notification *notification) {
     notification_to_del = nullptr;
 }
 
+void User::printBorrowedItems() const {
+    cout << "Borrowed Items (Total: " << this->borrowed_items.size() << ")" << endl;
+    cout << separator << endl;
+    for (Item *item : this->borrowed_items) {
+        item->printItem();
+        cout << separator << endl;
+    }
+}
+
 void User::clearNotifications() {
     for (Notification *notification : this->notifications) {
         delete notification;

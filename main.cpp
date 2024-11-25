@@ -36,6 +36,8 @@ int main() {
                         {"request item", "Request an item"},
                         {"show requests", "View all current requests"},
                         {"remove request", "Remove a request"},
+                        {"show borrowed items", "View all borrowed items"},
+                        {"get balance", "Get your current balance"},
                         {"send coins", "Send coins to another user"}
                 };
             }
@@ -130,6 +132,8 @@ int main() {
                 manager.addRequest(name, category, quantity, from_date, to_date);
             } else if (command == "show requests") {
                 manager.printRequests();
+            } else if (command == "show borrowed items") {
+                manager.printBorrowedItems();
             } else if (command == "remove request") {
                 cout << "Enter item name to remove request for: ";
                 getline(cin, name);
@@ -141,6 +145,8 @@ int main() {
                 getline(cin, command); // Using command temporarily for input
                 quantity = stoi(command);
                 manager.shareCoins(username, quantity);
+            } else if (command == "get balance") {
+                cout << "Your current balance is: " << manager.getBalance() << endl;
             } else {
                 cout << "Invalid command! Type 'help' to see available commands.\n";
             }

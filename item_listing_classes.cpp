@@ -85,7 +85,7 @@ void Item::updateToDate(string new_to_date) {
 // Print details of Item
 void Item::printItem() {
     cout << "Item Name: " << name << endl;
-    cout << "Category: " << category << endl;
+    cout << "Category: " << categoryToString(category) << endl;
     cout << "Quantity: " << quantity << endl;
     cout << "Availability: " << from_date << " to " << to_date << endl;
 }
@@ -135,6 +135,10 @@ categories Listing::getCategory() const {
 
 conditions Listing::getCondition() const {
     return this->item_condition;
+}
+
+int Listing::getPrice() const {
+    return this->item_price;
 }
 
 int Listing::getQuantity() const {

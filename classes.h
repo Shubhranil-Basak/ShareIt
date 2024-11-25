@@ -96,6 +96,8 @@ public:
 
     int getQuantity() const;
 
+    int getPrice() const;
+
     User *getOwner() const;
 };
 
@@ -164,6 +166,8 @@ public:
     vector<Item*> getRequestedItems() const;
 
     Notification *getNotification(int notification_number) const;
+
+    void printBorrowedItems() const;
 };
 
 class Manager
@@ -196,7 +200,7 @@ public:
     void removeRequest(string name);
 
     vector<Listing *> searchListingsForRequest(Item *request); // Returns a vector of items that match the search criteria
-    void borrowItem(Listing *item_to_borrow);     // Adds the item to the current_user's borrowed_items vector and removes it from the owner's listings vector
+    void borrowItem(Listing *item_to_borrow, User *borrower);     // Adds the item to the current_user's borrowed_items vector and removes it from the owner's listings vector
 
     void shareCoins(string &receiving_username, int coins_to_share); // Transfers coins_to_share from the current_user to the receiving_user
     void printRequests() const;
@@ -212,6 +216,10 @@ public:
     void replyToNotification(int notification_number, string &action);
 
     void printNotificationActions(int notification_number) const;
+
+    void printBorrowedItems() const;
+
+    int getBalance() const;
 };
 
 // TODO: Make a itemID attribute
