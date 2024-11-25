@@ -194,9 +194,13 @@ void Manager::notifyRequestersAboutNewListing(Listing *new_listing) {
 
 void Manager::notifyRequesterOfNewRequest(Item *new_request) {
     vector<Listing*> search_results = searchListingsForRequest(new_request);
+    cout << "Found " << search_results.size() << " listings that match the request." << endl;
+    string from_username = new_request->getOwner()->getUsername();
     for (Listing *listing: search_results) {
-        Notification *notification = new Notification(new_request->getOwner()->getUsername(), listing->getOwner()->getUsername(),
-                                                 listing, requestOwnerToBorrowItem);
+        cout << "Notifying " << listing->getOwner()->getUsername() << " about the request." << endl;
+        string owner_username = listing->getOwner()->getUsername();
+        Notification *notification = new Notification(from_username, owner_username, listing,
+                                                      requestOwnerToBorrowItem);
         notifyUser(notification);
     }
 }
@@ -210,10 +214,14 @@ void Manager::replyToNotification(int notification_number, string &action) {
     if (action == "yes") {
         // accept the requester
         Listing *listing = notification->getListing();
-        listing->bookItem();
-        current_user->borrowItem(listing->getItem());
-        Notification *reply_notification = new Notification(current_user->getUsername(), notification->getFromUsername(),listing,acceptBorrower);
-        notifyUser(reply_notification);
+        if (listing->isAvailable()) {
+            listing->bookItem();
+            current_user->borrowItem(listing->getItem());
+            Notification *reply_notification = new Notification(current_user->getUsername(), notification->getFromUsername(),listing,acceptBorrower);
+            notifyUser(reply_notification);
+        } else {
+            cout << "Item is no longer available." << endl;
+        }
     } else if (action == "no") {
         // reject the requester
         Notification *reply_notification = new Notification(current_user->getUsername(), notification->getFromUsername(),

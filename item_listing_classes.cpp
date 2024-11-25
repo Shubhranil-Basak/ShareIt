@@ -93,7 +93,7 @@ void Item::printItem() {
 // Listing class
 
 Listing::Listing(Item* item_listed, int item_price, conditions item_condition)
-        : item_listed(item_listed), item_price(item_price), item_condition(item_condition) {}
+        : item_listed(item_listed), item_price(item_price), item_condition(item_condition), item_available(true) {}
 
 bool Listing::isAvailable() const {
     return this->item_available;

@@ -7,135 +7,142 @@ int main() {
     Manager manager;
     string command;
     string username, password, action, name, category, condition, from_date, to_date;
-    int quantity, notification_number;
+    int quantity, price, notification_number;
+
+    cout << "\nWelcome to the Inventory Management System!\n";
+    cout << "Type 'help' to see available commands or 'exit' to quit.\n";
+    cout << "-------------------------------------------------------\n";
+
     while (true) {
-        cout << ">> ";
-        cin >> command;
+        cout << "\n>> ";
+        getline(cin, command);
+
         if (command == "help") {
-            // print all available commands
-            cout << "Commands available:" << endl;
+            // Define the commands and descriptions
+            vector<pair<string, string>> commands;
+
             if (!manager.logged_in) {
-                cout << "login -> To login into your account" << endl;
-                cout << "logout -> To log out of your account" << endl;
-                cout << "register -> To create a new account" << endl;
+                commands = {
+                        {"login", "Log into your account"},
+                        {"logout", "Log out of your account"},
+                        {"register", "Create a new account"}
+                };
+            } else {
+                commands = {
+                        {"print listings", "View all available listings"},
+                        {"print notifications", "View your notifications"},
+                        {"add listing", "Add a new listing"},
+                        {"remove listing", "Remove an existing listing"},
+                        {"request item", "Request an item"},
+                        {"show requests", "View all current requests"},
+                        {"remove request", "Remove a request"},
+                        {"send coins", "Send coins to another user"}
+                };
             }
-            else {
-                cout << "print listings -> To print all the available listings currently" << endl;
-                cout << "print notifications -> To print all available notifications" << endl;
-                cout << "add listing -> To add a new listing to the platform" << endl;
-                cout << "remove listing -> To remove an existing listing from the platform" << endl;
-                cout << "request item -> To send a request for an item" << endl;
-                cout << "show requests -> To show all current requests" << endl;
-                cout << "remove request -> To remove a request from the platform" << endl;
-                cout << "send coins -> To send coins to a friend" << endl;
-                cout << "request coins -> To request coins from a friend" << endl;
+
+            // Print the table header
+            cout << "\n------------------------- Commands Available -------------------------\n";
+            cout << left << setw(20) << "Command" << setw(50) << "Description" << endl;
+            cout << string(70, '-') << endl;
+
+            // Print the table rows
+            for (const auto& [cmd, desc] : commands) {
+                cout << left << setw(20) << cmd << setw(50) << desc << endl;
             }
-        }
-        if (command == "exit") {
+
+            cout << string(70, '-') << endl;
+        } else if (command == "exit") {
+            cout << "Exiting the program. Goodbye!\n";
             break;
-        }
-        if (!manager.logged_in) {
+        } else if (!manager.logged_in) {
             if (command == "login") {
-                // login logic
                 cout << "Enter username: ";
-                cin >> username;
+                getline(cin, username);
                 cout << "Enter password: ";
-                cin >> password;
+                getline(cin, password);
                 manager.login(username, password);
-            }
-            else if (command == "logout")  {
-                // logout logic
-                manager.logout();
-            }
-            else if (command == "register") {
-                // register logic
+            } else if (command == "logout") {
+                cout << "You are not logged in.\n";
+            } else if (command == "register") {
                 cout << "Enter username: ";
-                cin >> username;
+                getline(cin, username);
                 cout << "Enter password: ";
-                cin >> password;
+                getline(cin, password);
                 manager.registerUser(username, password);
                 manager.login(username, password);
+            } else {
+                cout << "Invalid command! Type 'help' to see available commands.\n";
             }
-            else {
-                cout << "Invalid command!" << endl;
-            }
-        }
-        else {
-            if (command == "print listings") {
-                // print all listings
+        } else {
+            if (command == "logout") {
+                manager.logout();
+                cout << "You have been logged out successfully.\n";
+            } else if (command == "print listings") {
                 manager.printListings();
-            }
-            else if (command == "print notifications") {
-                // print all notifications
+            } else if (command == "print notifications") {
                 manager.printNotifications();
-                cout << "\nDo you want to take any actions on the notifications? (yes/no): ";
-                cin >> action;
-                if (action == "no") {
-                    continue;
-                }
-                cout << "Enter the notification number you want to take action on: ";
-                cin >> notification_number;
+                cout << "\nWould you like to take any action on notifications? (yes/no): ";
+                getline(cin, action);
+                if (action == "no") continue;
+
+                cout << "Enter the notification number to act on: ";
+                getline(cin, command);  // Using command temporarily for input
+                notification_number = stoi(command);
                 manager.printNotificationActions(notification_number);
-                cout << "Enter the action you want to take: ";
-                cin >> action;
+
+                cout << "Enter the action to take: ";
+                getline(cin, action);
                 manager.replyToNotification(notification_number, action);
-            }
-            else if (command == "add listing") {
-                // add a new listing
+            } else if (command == "add listing") {
                 cout << "Enter item name: ";
-                cin >> name;
+                getline(cin, name);
                 cout << "Enter category: ";
-                cin >> category;
+                getline(cin, category);
                 cout << "Enter quantity: ";
-                cin >> quantity;
-                cout << "Enter from date: ";
-                cin >> from_date;
-                cout << "Enter to date: ";
-                cin >> to_date;
+                getline(cin, command); // Using command temporarily for input
+                quantity = stoi(command);
+                cout << "Enter from date (DD-MM-YYYY): ";
+                getline(cin, from_date);
+                cout << "Enter to date (DD-MM-YYYY): ";
+                getline(cin, to_date);
                 cout << "Enter condition: ";
-                cin >> condition;
-                manager.addListing(name, category, quantity, 0, from_date, to_date, condition);
-            }
-            else if (command == "remove listing") {
-                // remove a listing
-                cout << "Enter item name: ";
-                cin >> name;
+                getline(cin, condition);
+                cout << "Enter price: ";
+                getline(cin, command); // Using command temporarily for input
+                price = stoi(command);
+                manager.addListing(name, category, quantity, price, from_date, to_date, condition);
+            } else if (command == "remove listing") {
+                cout << "Enter item name to remove: ";
+                getline(cin, name);
                 manager.removeListing(name);
-            }
-            else if (command == "request item") {
-                // request an item
+            } else if (command == "request item") {
                 cout << "Enter item name: ";
-                cin >> name;
+                getline(cin, name);
                 cout << "Enter category: ";
-                cin >> category;
+                getline(cin, category);
                 cout << "Enter quantity: ";
-                cin >> quantity;
-                cout << "Enter from date: ";
-                cin >> from_date;
-                cout << "Enter to date: ";
-                cin >> to_date;
+                getline(cin, command); // Using command temporarily for input
+                quantity = stoi(command);
+                cout << "Enter from date (DD-MM-YYYY): ";
+                getline(cin, from_date);
+                cout << "Enter to date (DD-MM-YYYY): ";
+                getline(cin, to_date);
                 manager.addRequest(name, category, quantity, from_date, to_date);
-            }
-            else if (command == "show requests") {
-                // show all requests
+            } else if (command == "show requests") {
                 manager.printRequests();
-            }
-            else if (command == "remove request") {
-                // remove a request
-                cout << "Enter item name: ";
-                cin >> name;
+            } else if (command == "remove request") {
+                cout << "Enter item name to remove request for: ";
+                getline(cin, name);
                 manager.removeRequest(name);
-            }
-            else if (command == "send coins") {
-                // send coins to a friend
-                cout << "Enter receiving username: ";
-                cin >> username;
-                cout << "Enter coins to send: ";
-                cin >> quantity;
+            } else if (command == "send coins") {
+                cout << "Enter recipient's username: ";
+                getline(cin, username);
+                cout << "Enter number of coins to send: ";
+                getline(cin, command); // Using command temporarily for input
+                quantity = stoi(command);
                 manager.shareCoins(username, quantity);
-            }
-            else {
-                cout << "Invalid command!" << endl;
+            } else {
+                cout << "Invalid command! Type 'help' to see available commands.\n";
             }
         }
     }
