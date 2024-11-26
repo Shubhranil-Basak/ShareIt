@@ -86,6 +86,10 @@ void Item::updateToDate(string new_to_date) {
 void Item::printItem() {
     cout << "Item Name: " << name << endl;
     cout << "Category: " << categoryToString(category) << endl;
+    if (owner != nullptr)
+        cout << "Owner: " << owner->getUsername() << endl;
+    if (borrower != nullptr)
+        cout << "Borrower: " << borrower->getUsername() << endl;
     cout << "Quantity: " << quantity << endl;
     cout << "Availability: " << from_date << " to " << to_date << endl;
 }
