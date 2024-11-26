@@ -61,7 +61,7 @@ int main() {
 
             cout << string(70, '-') << endl;
         }
-        else if (command == "exit") {
+        else if (command == "exit" or command == "Exit") {
             cout << "Exiting the program. Goodbye!\n";
             break;
         }
