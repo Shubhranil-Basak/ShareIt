@@ -26,7 +26,8 @@ int main() {
                 commands = {
                         {"login", "Log into your account"},
                         {"logout", "Log out of your account"},
-                        {"register", "Create a new account"}
+                        {"register", "Create a new account"},
+                        {"Exit/exit", "Exit the Shareit program"}
                 };
             }
             else {
