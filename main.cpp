@@ -33,7 +33,7 @@ int main() {
                         {"login", "Log into your account"},
                         {"logout", "Log out of your account"},
                         {"register", "Create a new account"},
-                        {"Exit/exit", "Exit the Shareit program"}
+                        {"exit", "Exit the Shareit program"}
                 };
             }
             else {
@@ -51,7 +51,8 @@ int main() {
                         {"show borrowed items", "View all your borrowed items"},
                         {"return item", "Return a borrowed item"},
                         {"get balance", "Get your current balance"},
-                        {"send coins", "Send coins to another user"}
+                        {"send coins", "Send coins to another user"},
+                        {"exit", "Exit the Shareit program"}
                 };
             }
 
