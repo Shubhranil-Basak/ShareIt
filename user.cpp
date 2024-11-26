@@ -156,6 +156,19 @@ void User::returnItem(int borrowed_number) {
     this->borrowed_items.erase(this->borrowed_items.begin() + borrowed_number - 1);
 }
 
+void User::returnItem(Item* borrowed_item) {
+    Item *item_to_del = nullptr;
+    for (size_t i = 0; i < this->borrowed_items.size(); i++) {
+        if (this->borrowed_items[i] == borrowed_item) {
+            item_to_del = this->borrowed_items[i];
+            this->borrowed_items.erase(this->borrowed_items.begin() + i);
+            break;
+        }
+    }
+    delete item_to_del;
+    item_to_del = nullptr;
+}
+
 // Notifications
 void User::printNotifications() const {
     cout << "Notifications (Total: " << this->notifications.size() << ")" << endl;

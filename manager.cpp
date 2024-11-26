@@ -2,6 +2,15 @@
 
 using namespace std;
 
+void Manager::setDate(string currentDate) {
+    int day, month, year;
+    if (isValidDate(currentDate, day, month, year)) {
+        this->currentDate = currentDate;
+    } else {
+        cout << "Invalid date format. Please use 'DD-MM-YYYY'." << endl;
+    }
+}
+
 void Manager::registerUser(string username, string password) {
     bool user_exists = false;
     for (User* existing_user: users) {
@@ -120,7 +129,7 @@ void Manager::addListing(string name, string category, int quantity, int price,
     this->current_user->listItem(new_listing);
     cout << "Item " << name << " is now listed!" << endl;
 
-//    notifyRequestersAboutNewListing(new_listing);
+    notifyRequestersAboutNewListing(new_listing);
 }
 
 void Manager::removeListing(string &name) {
@@ -180,7 +189,7 @@ void Manager::addRequest(string name, string category, int quantity, string from
     this->current_user->requestItem(new_request);
     requests.push_back(new_request);
 
-//    notifyRequesterOfNewRequest(new_request);
+    notifyRequesterOfNewRequest(new_request);
 }
 
 void Manager::removeRequest(string name) {
@@ -411,4 +420,27 @@ bool Manager::userExists(string username) const {
     return std::any_of(users.begin(), users.end(), [&](const User* user) {
         return user->getUsername() == username;
     });
+}
+
+void Manager::returnItemsIfOverdue() {
+    for (User* user: users) {
+        for (Item* borrowed_item: user->getBorrowedItems()) {
+            if (compareDates(currentDate, borrowed_item->getToDate()) > 0) {
+                Listing* listing = nullptr;
+                for (Listing* item_listing: user->getListings()) {
+                    if (item_listing->getItem() == borrowed_item) {
+                        listing = item_listing;
+                        break;
+                    }
+                }
+                if (listing == nullptr) {
+                    cout << "Error: borrowed item not found in owner's listings." << endl;
+                    return;
+                }
+                listing->freeItem();
+                user->returnItem(borrowed_item);
+                cout << "Item " << borrowed_item->getName() << " returned due to overdue." << endl;
+            }
+        }
+    }
 }

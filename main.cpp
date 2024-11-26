@@ -4,7 +4,13 @@
 using namespace std;
 
 int main() {
+    // getting current date
+    time_t t = time(nullptr);
+    tm* now = localtime(&t);
+    string currentDate = to_string(now->tm_mday) + "-" + to_string(now->tm_mon + 1) + "-" + to_string(now->tm_year + 1900);
     Manager manager;
+    manager.setDate(currentDate);
+
     string command;
     string username, password, action, name, category, condition, from_date, to_date;
     int quantity, price, notification_number, num_notifications, request_number, listing_number, coins, borrowed_number;
@@ -245,6 +251,12 @@ int main() {
                 }
                 coins = stoi(command);
                 manager.shareCoins(username, coins);
+            }
+            else if (command == "setDate") {
+                cout << "Enter the current date (DD-MM-YYYY): ";
+                getline(cin, command);
+                manager.setDate(command);
+                manager.returnItemsIfOverdue();
             }
             else {
                 cout << "Invalid command! Type 'help' to see available commands.\n";

@@ -182,6 +182,8 @@ public:
     vector<Item *> getBorrowedItems() const;
 
     void returnItem(int borrowed_number);
+
+    void returnItem(Item *borrowed_item);
 };
 
 class Manager
@@ -191,6 +193,7 @@ private:
     User *current_user{};
     vector<Listing *> listings;
     vector<Item *> requests;
+    string currentDate;
 
 public:
     Manager() = default;
@@ -252,6 +255,10 @@ public:
     bool isNotCurrentUser(string username) const;
 
     void removeListing(int listing_number);
+
+    void setDate(string currentDate);
+
+    void returnItemsIfOverdue();
 };
 
 // TODO: Make a itemID attribute
