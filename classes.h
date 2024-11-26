@@ -250,6 +250,8 @@ public:
     void returnItem(int borrowed_number);
 
     bool isNotCurrentUser(string username) const;
+
+    void removeListing(int listing_number);
 };
 
 // TODO: Make a itemID attribute

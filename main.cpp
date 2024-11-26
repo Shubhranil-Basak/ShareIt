@@ -161,9 +161,14 @@ int main() {
                 manager.addListing(name, category, quantity, price, from_date, to_date, condition);
             }
             else if (command == "remove listing") {
-                cout << "Enter item name to remove: ";
-                getline(cin, name);
-                manager.removeListing(name);
+                cout << "Enter listing number to remove: ";
+                getline(cin, command);
+                if (command.find_first_not_of("0123456789") != string::npos) {
+                    cout << "Invalid listing number.\n";
+                    continue;
+                }
+                listing_number = stoi(command);
+                manager.removeListing(listing_number);
             }
             else if (command == "add request") {
                 cout << "Enter item name: ";
