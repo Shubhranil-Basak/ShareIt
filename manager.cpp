@@ -145,6 +145,26 @@ void Manager::removeListing(string &name) {
     }
 }
 
+void Manager::removeListing(int listing_number) {
+    if (listing_number < 1 || listing_number > this->current_user->getListings().size()) {
+        cout << "Invalid listing number." << endl;
+        return;
+    }
+    Listing *listing_to_del = this->current_user->getListings()[listing_number - 1];
+    if (!listing_to_del->isAvailable()) {
+        cout << "Item " << listing_to_del->getName() << " is currently borrowed. Cannot remove listing." << endl;
+        return;
+    }
+    this->current_user->removeListing(listing_to_del);
+    for (int i = 0; i < this->listings.size(); i++) {
+        if (this->listings[i] == listing_to_del) {
+            this->listings.erase(this->listings.begin() + i);
+            break;
+        }
+    }
+    cout << "Listing removed." << endl;
+}
+
 void Manager::addRequest(string name, string category, int quantity, string from_date, string to_date) {
     categories category_enum = stringToCategory(category);
     if (!areValidateDates(from_date, to_date)) {
@@ -171,6 +191,14 @@ void Manager::removeRequest(int request_number) {
     if (request_number < 1 || request_number > this->current_user->getRequestedItems().size()) {
         cout << "Invalid request number." << endl;
         return;
+    }
+    // we need to remove this request from manager's requests as well
+    Item *request_to_del = this->current_user->getRequestedItems()[request_number - 1];
+    for (int i = 0; i < this->requests.size(); i++) {
+        if (this->requests[i] == request_to_del) {
+            this->requests.erase(this->requests.begin() + i);
+            break;
+        }
     }
     this->current_user->removeRequest(request_number - 1);
     cout << "Request removed." << endl;
@@ -352,6 +380,10 @@ void Manager::shareCoins(string &receiving_username, int coins_to_share) {
     bool shared = false;
     if (coins_to_share <= 0) {
         cout << "Invalid number of coins to share." << endl;
+        return;
+    }
+    if (coins_to_share > current_user->getCoinBalance()) {
+        cout << "You don't have enough coins to share." << endl;
         return;
     }
     for (User* user: users) {
