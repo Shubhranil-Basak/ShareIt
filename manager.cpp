@@ -1,6 +1,12 @@
 #include "classes.h"
+#include <nlohmann/json.hpp>
+#include <fstream>
 
 using namespace std;
+using json = nlohmann::json;
+
+json data;
+json users_data;
 
 void Manager::setDate(string currentDate) {
     int day, month, year;
@@ -12,24 +18,72 @@ void Manager::setDate(string currentDate) {
 }
 
 void Manager::registerUser(string username, string password) {
+    // Load existing users from the file
+    json users_data;
+    ifstream user_file("../user.json");
+    if (user_file.is_open()) {
+        user_file >> users_data;  // Load JSON data from file
+        user_file.close();
+    }
+
+    // Check if user already exists (both in memory and JSON file)
     bool user_exists = false;
-    for (User* existing_user: users) {
+    for (User* existing_user : users) {
         if (existing_user->getUsername() == username) {
             user_exists = true;
-            cout << "user with username '" << username << "' already exists. Try another username." << endl;
-            break;
+            cout << "User with username '" << username << "' already exists. Try another username." << endl;
+            return;
         }
     }
+    for (auto& existing_user : users_data) {
+        if (existing_user["name"] == username) {
+            user_exists = true;
+            cout << "User with username '" << username << "' already exists. Try another username." << endl;
+            return;
+        }
+    }
+
+    // If user does not exist, create a new user and save it
     if (!user_exists) {
         User* new_user = new User(username, password);
         this->users.push_back(new_user);
-        cout << "New user '" << username << "' is created! ";
-        cout << "Login to access your account" << endl;
+
+        // Add new user to JSON
+        json new_user_json = {
+            {"name", username},
+            {"password", password}  // Consider hashing the password for security
+        };
+        users_data.push_back(new_user_json);
+
+        // Save updated JSON data back to the file
+        ofstream out_file("../user.json");
+        if (out_file.is_open()) {
+            out_file << users_data.dump(4);  // Pretty-print JSON with 4-space indentation
+            out_file.close();
+        } else {
+            cout << "Error: Unable to save user data to users.json." << endl;
+        }
+
+        cout << "New user '" << username << "' is created! Login to access your account." << endl;
     }
 }
 
+
+
 bool Manager::login(string &username, string &password) {
-    for (User* user: this->users) {
+    // Load existing users from the JSON file
+    json users_data;
+    ifstream user_file("../user.json");
+    if (user_file.is_open()) {
+        user_file >> users_data;  // Load JSON data
+        user_file.close();
+    } else {
+        cout << "Error: Unable to open users.json for reading." << endl;
+        return false;
+    }
+
+    // Authenticate against users in memory
+    for (User* user : this->users) {
         if (user->authenticate(username, password)) {
             this->current_user = user;
             this->logged_in = true;
@@ -37,9 +91,26 @@ bool Manager::login(string &username, string &password) {
             return true;
         }
     }
+
+    // Authenticate against users in the JSON file
+    for (auto& existing_user : users_data) {
+        if (existing_user["name"] == username && existing_user["password"] == password) {
+            // Create a new User object for the logged-in user and store it in memory
+            User* logged_in_user = new User(username, password);
+            this->users.push_back(logged_in_user);
+            this->current_user = logged_in_user;
+            this->logged_in = true;
+
+            cout << "Successfully logged in as " << username << "." << endl;
+            return true;
+        }
+    }
+
     cout << "Invalid login credentials." << endl;
     return false;
 }
+
+
 
 void Manager::logout() {
     this->current_user = nullptr;
@@ -107,6 +178,7 @@ void Manager::addListing(string name, string category, int quantity, int price,
                          string from_date, string to_date, string condition) {
     conditions condition_enum = stringToCondition(condition);
     categories category_enum = stringToCategory(category);
+
     if (condition_enum == INVALID) {
         cout << "Invalid condition. Please use 'excellent', 'good', 'fair', or 'poor'." << endl;
         return;
@@ -123,11 +195,44 @@ void Manager::addListing(string name, string category, int quantity, int price,
         return;
     }
 
+    json listing_data;
+    ifstream data_file("../data.json");
+    if (data_file.is_open()) {
+        try {
+            data_file >> listing_data;
+        } catch (const std::exception& e) {
+            listing_data = json::object();
+        }
+        data_file.close();
+    } else {
+        // Initialize empty JSON if file does not exist
+        listing_data = json::object();
+    }
+
     Item* new_item = new Item(name, category_enum, quantity, from_date, to_date, current_user);
     Listing* new_listing = new Listing(new_item, price, condition_enum);
     this->listings.push_back(new_listing);
     this->current_user->listItem(new_listing);
-    cout << "Item " << name << " is now listed!" << endl;
+
+    // Add new listing to JSON
+    json listing = {
+        {"name", name},
+        {"category", category},
+        {"quantity", quantity},
+        {"price", price},
+        {"from_date", from_date},
+        {"to_date", to_date},
+        {"condition", condition}
+    };
+
+    listing_data[current_user->getUsername()]["listings"].push_back(listing);
+
+    ofstream out_file("../data.json");
+    if (out_file.is_open()) {
+        out_file << listing_data.dump(4);  // Pretty-print JSON
+        out_file.close();
+        cout << "Item " << name << " is now listed! " << endl;
+    }
 
     notifyRequestersAboutNewListing(new_listing);
 }
@@ -188,6 +293,16 @@ void Manager::addRequest(string name, string category, int quantity, string from
                                  nullptr, current_user);
     this->current_user->requestItem(new_request);
     requests.push_back(new_request);
+
+    json request = {
+        {"name", name},
+        {"category", category},
+        {"quantity", quantity},
+        {"from_date", from_date},
+        {"to_date", to_date}
+    };
+
+    data[current_user->getUsername()]["requests"].push_back(request);
 
     notifyRequesterOfNewRequest(new_request);
 }
